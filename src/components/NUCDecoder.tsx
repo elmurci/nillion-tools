@@ -349,7 +349,7 @@ const NUCDecoder: React.FC = () => {
                     <span className="inline-flex items-center rounded-md bg-purple-50 px-2 py-1 mx-3 font-medium text-purple-700 ring-1 ring-purple-600/20 ring-inset">{selectedToken?.decoded?.token.command.toString()!}</span>
                     on 
                     <span className="inline-flex items-center rounded-md bg-yellow-50 px-2 py-1 mx-3 font-medium text-yellow-700 ring-1 ring-yellow-600/20 ring-inset" data-tooltip-id="did-tooltip" data-tooltip-content={selectedToken?.decoded?.token.subject.toString()} data-tooltip-place="top">{aliases[selectedToken?.decoded?.token.subject.toString()!]}</span>
-                    { JSON.parse(selectedToken.decoded?.token.toString()!).pol.length > 0 && (
+                    { JSON.parse(selectedToken.decoded?.token.toString()!).pol && JSON.parse(selectedToken.decoded?.token.toString()!).pol.length > 0 && (
                       <div className="mt-2">
                       with arguments
                         <span className="inline-flex items-center rounded-md bg-pink-50 px-2 py-1 mx-3 font-medium text-pink-700 ring-1 ring-pink-600/20 ring-inset text-sm">
