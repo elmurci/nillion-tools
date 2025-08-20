@@ -1,11 +1,12 @@
 import React from 'react';
-import { ExternalLink, ArrowRight } from 'lucide-react';
+import { ExternalLink, ArrowRight, Wrench, BookOpen, Github } from 'lucide-react';
 
 interface AppCardProps {
   title: string;
   description: string;
   href: string;
   isExternal?: boolean;
+  icon?: 'tool' | 'documentation' | 'github';
   onClick?: () => void;
 }
 
@@ -14,6 +15,7 @@ const AppCard: React.FC<AppCardProps> = ({
   description, 
   href, 
   isExternal = false,
+  icon = 'tool',
   onClick 
 }) => {
   const handleClick = () => {
@@ -26,11 +28,27 @@ const AppCard: React.FC<AppCardProps> = ({
     }
   };
 
+  const getIcon = () => {
+    switch (icon) {
+      case 'tool':
+        return <Wrench size={24} className="text-blue-300" />;
+      case 'documentation':
+        return <BookOpen size={24} className="text-green-300" />;
+      case 'github':
+        return <Github size={24} className="text-purple-300" />;
+      default:
+        return <Wrench size={24} className="text-blue-300" />;
+    }
+  };
   return (
     <div 
       onClick={handleClick}
       className="group bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-6 cursor-pointer transition-all duration-300 hover:bg-white/20 hover:border-white/40 hover:shadow-xl hover:scale-105 transform"
     >
+      <div className="flex items-center justify-center w-12 h-12 bg-white/10 rounded-lg mb-4 group-hover:bg-white/20 transition-colors">
+        {getIcon()}
+      </div>
+      
       <div className="flex items-start justify-between mb-3">
         <h3 className="text-lg font-semibold text-white group-hover:text-blue-100 transition-colors">
           {title}

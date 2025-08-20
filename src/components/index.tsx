@@ -11,19 +11,22 @@ const Index: React.FC = () => {
       title: 'NUC Viewer',
       description: 'Decode and inspect NUC (Nillion User Credential) tokens instantly. View token chains, signatures, and payload details.',
       href: '/nuc-viewer',
-      isExternal: false
+      isExternal: false,
+      icon: 'tool' as const
     },
     {
       title: 'Nillion Documentation',
       description: 'Official documentation for Nillion network, including guides, API references, and developer resources.',
       href: 'https://docs.nillion.com',
-      isExternal: true
+      isExternal: true,
+      icon: 'documentation' as const
     },
     {
       title: 'Nillion GitHub',
       description: 'Explore the open-source repositories, SDKs, and tools for building on the Nillion network.',
       href: 'https://github.com/nillionnetwork',
-      isExternal: true
+      isExternal: true,
+      icon: 'github' as const
     }
   ];
 
@@ -61,6 +64,7 @@ const Index: React.FC = () => {
               description={app.description}
               href={app.href}
               isExternal={app.isExternal}
+              icon={app.icon}
               onClick={!app.isExternal ? () => navigate(app.href) : undefined}
             />
           ))}
