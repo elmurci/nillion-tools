@@ -70,7 +70,7 @@ const Index: React.FC = () => {
         <div className="text-center">
           <p className="text-white/60 text-sm">
             Built for the Nillion developer community
-          </div>
+          </p>
         </div>
       </div>
     </div>
