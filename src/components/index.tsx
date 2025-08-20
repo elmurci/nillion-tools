@@ -22,11 +22,11 @@ const Index: React.FC = () => {
       icon: 'documentation' as const
     },
     {
-      title: 'Nillion GitHub',
-      description: 'Explore the open-source repositories, SDKs, and tools for building on the Nillion network.',
-      href: 'https://github.com/nillionnetwork',
+      title: 'Storage Tools',
+      description: 'Builder tools for creating and managing Nillion Private Storage schemas, collections, and records.',
+      href: 'https://nillion-storage-tools.vercel.app/',
       isExternal: true,
-      icon: 'github' as const
+      icon: 'tool' as const
     }
   ];
 

@@ -236,7 +236,7 @@ const NUCDecoder: React.FC = () => {
             className="flex items-center gap-2 px-4 py-2 bg-white/20 backdrop-blur-sm text-white font-semibold rounded-lg hover:bg-white/30 focus:ring-4 focus:ring-white/30 transition-all duration-200 shadow-lg hover:shadow-xl border border-white/20 transform hover:scale-105"
           >
             <ArrowLeft size={18} />
-            Back to Home
+            Back 
           </button>
         </div>
 
