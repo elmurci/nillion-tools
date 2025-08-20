@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Copy, Key, AlertCircle, CheckCircle } from 'lucide-react';
+import { Copy, Key, AlertCircle, CheckCircle, ArrowLeft } from 'lucide-react';
 import { DecodedNucToken, NucToken, NucTokenEnvelope, NucTokenEnvelopeSchema } from '@nillion/nuc';
+import { useNavigate } from 'react-router-dom';
 import { Tooltip } from 'react-tooltip';
 import 'react-tooltip/dist/react-tooltip.css';
 
@@ -23,6 +24,7 @@ interface TokenChainItem {
 const aliases: Record<string, string> = {};
 
 const NUCDecoder: React.FC = () => {
+  const navigate = useNavigate();
   const [nuc, setNUC] = useState('');
   const [decodedNUC, setDecodedNUC] = useState<NucTokenEnvelope | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -227,6 +229,17 @@ const NUCDecoder: React.FC = () => {
       </div>
 
       <div className="max-w-5xl mx-auto relative z-10">
+        {/* Back Button */}
+        <div className="mb-6">
+          <button
+            onClick={() => navigate('/')}
+            className="flex items-center gap-2 px-4 py-2 bg-white/20 backdrop-blur-sm text-white font-semibold rounded-lg hover:bg-white/30 focus:ring-4 focus:ring-white/30 transition-all duration-200 shadow-lg hover:shadow-xl border border-white/20 transform hover:scale-105"
+          >
+            <ArrowLeft size={18} />
+            Back to Home
+          </button>
+        </div>
+
         <div className="text-center mb-12">
           <div className="inline-flex items-center justify-center w-20 h-20 bg-black/60 backdrop-blur-sm rounded-full mb-6">
             <img 
