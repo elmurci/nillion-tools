@@ -27,6 +27,13 @@ const Index: React.FC = () => {
       href: 'https://nillion-storage-tools.vercel.app/',
       isExternal: true,
       icon: 'tool' as const
+    },
+    {
+      title: 'Blindfold Tool',
+      description: 'Blindfold supports store, match, and sum operations across single-node and multi-node configurations with various cryptographic implementations.',
+      href: 'https://blindfold-demos.vercel.app/',
+      isExternal: true,
+      icon: 'tool' as const
     }
   ];
 
