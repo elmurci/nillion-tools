@@ -1,5 +1,6 @@
 import React from 'react';
 import { Filter, X, ChevronDown, Check } from 'lucide-react';
+import { createPortal } from 'react-dom';
 
 export interface FilterOptions {
   languages: string[];
@@ -24,12 +25,15 @@ const FilterBar: React.FC<FilterBarProps> = ({
   apps
 }) => {
   const [isAreaDropdownOpen, setIsAreaDropdownOpen] = React.useState(false);
+  const [dropdownPosition, setDropdownPosition] = React.useState({ top: 0, left: 0, width: 0 });
   const dropdownRef = React.useRef<HTMLDivElement>(null);
+  const buttonRef = React.useRef<HTMLButtonElement>(null);
 
   // Close dropdown when clicking outside
   React.useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node) &&
+          buttonRef.current && !buttonRef.current.contains(event.target as Node)) {
         setIsAreaDropdownOpen(false);
       }
     };
@@ -37,6 +41,18 @@ const FilterBar: React.FC<FilterBarProps> = ({
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
+
+  // Update dropdown position when opened
+  React.useEffect(() => {
+    if (isAreaDropdownOpen && buttonRef.current) {
+      const rect = buttonRef.current.getBoundingClientRect();
+      setDropdownPosition({
+        top: rect.bottom + window.scrollY + 4,
+        left: rect.left + window.scrollX,
+        width: rect.width
+      });
+    }
+  }, [isAreaDropdownOpen]);
 
   const clearAllFilters = () => {
     onLanguageChange(null);
@@ -51,6 +67,10 @@ const FilterBar: React.FC<FilterBarProps> = ({
     } else {
       onAreaChange([...selectedAreas, area]);
     }
+  };
+
+  const toggleDropdown = () => {
+    setIsAreaDropdownOpen(!isAreaDropdownOpen);
   };
 
   return (
@@ -90,15 +110,16 @@ const FilterBar: React.FC<FilterBarProps> = ({
         </div>
 
         {/* Area Filter */}
-        <div className="relative overflow-visible" ref={dropdownRef}>
+        <div className="relative">
           <label className="block text-sm font-medium text-white/80 mb-2">
             Areas {selectedAreas.length > 0 && `(${selectedAreas.length} selected)`}
           </label>
           
           {/* Dropdown Button */}
           <button
+            ref={buttonRef}
             type="button"
-            onClick={() => setIsAreaDropdownOpen(!isAreaDropdownOpen)}
+            onClick={toggleDropdown}
             className="w-full px-3 py-2 bg-white/20 backdrop-blur-sm border border-white/30 rounded-lg text-white text-left focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all flex items-center justify-between hover:bg-white/25"
           >
             <span className="truncate">
@@ -114,61 +135,71 @@ const FilterBar: React.FC<FilterBarProps> = ({
               className={`transition-transform duration-200 ${isAreaDropdownOpen ? 'rotate-180' : ''}`} 
             />
           </button>
-
-          {/* Dropdown Menu */}
-          {isAreaDropdownOpen && (
-            <div className="absolute z-[9999] w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-2xl max-h-60 overflow-y-auto">
-              {availableFilters.areas.length === 0 ? (
-                <div className="px-3 py-2 text-gray-500 text-sm">No areas available</div>
-              ) : (
-                <>
-                  {/* Select All / Clear All */}
-                  <div className="border-b border-gray-200/50 p-2">
-                    <button
-                      onClick={() => {
-                        if (selectedAreas.length === availableFilters.areas.length) {
-                          onAreaChange([]);
-                        } else {
-                          onAreaChange([...availableFilters.areas]);
-                        }
-                      }}
-                      className="text-xs text-blue-600 hover:text-blue-800 font-medium transition-colors"
-                    >
-                      {selectedAreas.length === availableFilters.areas.length ? 'Clear All' : 'Select All'}
-                    </button>
-                  </div>
-                  
-                  {/* Area Options */}
-                  {availableFilters.areas.map((area) => (
-                    <label 
-                      key={area} 
-                      className="flex items-center space-x-3 px-3 py-2 hover:bg-blue-50/50 cursor-pointer transition-colors group"
-                    >
-                      <div className="relative">
-                        <input
-                          type="checkbox"
-                          checked={selectedAreas.includes(area)}
-                          onChange={() => handleAreaToggle(area)}
-                          className="w-4 h-4 text-blue-600 bg-white border-gray-300 rounded focus:ring-blue-500 focus:ring-2 transition-colors"
-                        />
-                        {selectedAreas.includes(area) && (
-                          <Check size={12} className="absolute top-0.5 left-0.5 text-white pointer-events-none" />
-                        )}
-                      </div>
-                      <span className="text-gray-800 text-sm group-hover:text-gray-900 transition-colors flex-1">
-                        {area}
-                      </span>
-                      <span className="text-xs text-gray-500 group-hover:text-gray-600 transition-colors">
-                        {apps.filter(app => app.area === area).length}
-                      </span>
-                    </label>
-                  ))}
-                </>
-              )}
-            </div>
-          )}
         </div>
       </div>
+
+      {/* Portal-based Dropdown Menu */}
+      {isAreaDropdownOpen && createPortal(
+        <div 
+          ref={dropdownRef}
+          className="fixed bg-white border border-gray-300 rounded-lg shadow-2xl max-h-60 overflow-y-auto"
+          style={{
+            top: dropdownPosition.top,
+            left: dropdownPosition.left,
+            width: dropdownPosition.width,
+            zIndex: 99999
+          }}
+        >
+          {availableFilters.areas.length === 0 ? (
+            <div className="px-3 py-2 text-gray-500 text-sm">No areas available</div>
+          ) : (
+            <>
+              {/* Select All / Clear All */}
+              <div className="border-b border-gray-200/50 p-2">
+                <button
+                  onClick={() => {
+                    if (selectedAreas.length === availableFilters.areas.length) {
+                      onAreaChange([]);
+                    } else {
+                      onAreaChange([...availableFilters.areas]);
+                    }
+                  }}
+                  className="text-xs text-blue-600 hover:text-blue-800 font-medium transition-colors"
+                >
+                  {selectedAreas.length === availableFilters.areas.length ? 'Clear All' : 'Select All'}
+                </button>
+              </div>
+              
+              {/* Area Options */}
+              {availableFilters.areas.map((area) => (
+                <label 
+                  key={area} 
+                  className="flex items-center space-x-3 px-3 py-2 hover:bg-blue-50/50 cursor-pointer transition-colors group"
+                >
+                  <div className="relative">
+                    <input
+                      type="checkbox"
+                      checked={selectedAreas.includes(area)}
+                      onChange={() => handleAreaToggle(area)}
+                      className="w-4 h-4 text-blue-600 bg-white border-gray-300 rounded focus:ring-blue-500 focus:ring-2 transition-colors"
+                    />
+                    {selectedAreas.includes(area) && (
+                      <Check size={12} className="absolute top-0.5 left-0.5 text-white pointer-events-none" />
+                    )}
+                  </div>
+                  <span className="text-gray-800 text-sm group-hover:text-gray-900 transition-colors flex-1">
+                    {area}
+                  </span>
+                  <span className="text-xs text-gray-500 group-hover:text-gray-600 transition-colors">
+                    {apps.filter(app => app.area === area).length}
+                  </span>
+                </label>
+              ))}
+            </>
+          )}
+        </div>,
+        document.body
+      )}
 
       {/* Active Filters Display */}
       {hasActiveFilters && (
