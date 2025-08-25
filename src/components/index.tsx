@@ -16,8 +16,7 @@ const Index: React.FC = () => {
       href: '/nuc-viewer',
       isExternal: false,
       icon: 'tool' as const,
-      language: 'TypeScript',
-      areas: ['Authentication']
+      areas: ['Authentication', 'Tooling']
     },
     {
       title: 'Nillion Documentation',
@@ -33,8 +32,7 @@ const Index: React.FC = () => {
       href: 'https://nillion-storage-tools.vercel.app/',
       isExternal: true,
       icon: 'tool' as const,
-      language: 'TypeScript',
-      areas: ['Storage']
+      areas: ['Storage', 'Tooling']
     },
     {
       title: 'Blindfold Tool',
@@ -42,8 +40,61 @@ const Index: React.FC = () => {
       href: 'https://blindfold-demos.vercel.app/',
       isExternal: true,
       icon: 'tool' as const,
+      areas: ['Cryptography', 'Tooling']
+    },
+    {
+      title: 'nuc-ts',
+      description: 'Data structures and functionalities for the Nillion Network user identity and authorization framework.',
+      href: 'https://github.com/NillionNetwork/nuc-ts',
+      isExternal: true,
+      icon: 'tool' as const,
       language: 'TypeScript',
-      areas: ['Cryptography']
+      areas: ['Authentication', 'SDK']
+    },
+    {
+      title: 'nuc-py',
+      description: 'Data structures and functionalities for the Nillion Network user identity and authorization framework.',
+      href: 'https://github.com/NillionNetwork/nuc-py',
+      isExternal: true,
+      icon: 'tool' as const,
+      language: 'Python',
+      areas: ['Authentication', 'SDK']
+    },
+    {
+      title: 'secretvaults-ts',
+      description: "Private storage is enabled using Nillion's blindfold libraries (which implement secret sharing) and Nillion's secretvaults SDKs (which simplify interacting with nilDB clusters).",
+      href: 'https://github.com/NillionNetwork/secretvaults-ts',
+      isExternal: true,
+      icon: 'tool' as const,
+      language: 'TypeScript',
+      areas: ['Storage', 'SDK']
+    },
+    {
+      title: 'secretvaults-py',
+      description: "Private storage is enabled using Nillion's blindfold libraries (which implement secret sharing) and Nillion's secretvaults SDKs (which simplify interacting with nilDB clusters).",
+      href: 'https://github.com/NillionNetwork/secretvaults-py',
+      isExternal: true,
+      icon: 'tool' as const,
+      language: 'Python',
+      areas: ['Storage', 'SDK']
+    },
+    {
+      title: 'nilai-ts',
+      description: 'A TypeScript SDK for the Nilai platform that provides delegation token management and OpenAI-compatible client functionality for accessing AI models through secure, decentralized infrastructure.',
+      href: 'https://github.com/NillionNetwork/nilai-ts',
+      isExternal: true,
+      icon: 'tool' as const,
+      language: 'TypeScript',
+      areas: ['AI', 'SDK']
+    },
+    {
+      title: 'nilai-py',
+      description: "A Python SDK for the Nilai platform that provides delegation token management and OpenAI-compatible client functionality for accessing AI models through secure, decentralized infrastructure.",
+      href: 'https://github.com/NillionNetwork/nilai-py',
+      isExternal: true,
+      icon: 'tool' as const,
+      language: 'Python',
+      areas: ['AI', 'SDK']
     }
   ];
 
