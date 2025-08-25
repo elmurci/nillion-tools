@@ -166,7 +166,6 @@ const FilterBar: React.FC<FilterBarProps> = ({
               )}
             </div>
           )}
-          </div>
       </div>
 
       {/* Active Filters Display */}
