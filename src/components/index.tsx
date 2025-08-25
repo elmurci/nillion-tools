@@ -95,6 +95,7 @@ const Index: React.FC = () => {
           onLanguageChange={setSelectedLanguage}
           onAreaChange={setSelectedAreas}
           availableFilters={availableFilters}
+          apps={apps}
         />
 
         {/* App Cards Grid */}
