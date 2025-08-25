@@ -128,17 +128,6 @@ const Index: React.FC = () => {
           </div>
         )}
 
-        {/* App Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-          {filteredApps.map((app, index) => (
-            <AppCard
-              key={index}
-              app={app}
-              onClick={!app.isExternal ? () => navigate(app.href) : undefined}
-            />
-          ))}
-        </div>
-
         {/* Footer */}
         <div className="text-center">
           <p className="text-white/60 text-sm">
