@@ -15,7 +15,7 @@ const Index: React.FC = () => {
       description: 'Decode and inspect NUC (Nillion User Credential) tokens instantly. View token chains, signatures, and payload details.',
       href: '/nuc-viewer',
       isExternal: false,
-      icon: 'tool' as const,
+      icon: 'circuit-board' as const,
       areas: ['Authentication', 'Tooling']
     },
     {
@@ -31,7 +31,7 @@ const Index: React.FC = () => {
       description: 'Builder tools for creating and managing Nillion Private Storage schemas, collections, and records.',
       href: 'https://nillion-storage-tools.vercel.app/',
       isExternal: true,
-      icon: 'tool' as const,
+      icon: 'circuit-board' as const,
       areas: ['Storage', 'Tooling']
     },
     {
@@ -39,7 +39,7 @@ const Index: React.FC = () => {
       description: 'Blindfold supports store, match, and sum operations across single-node and multi-node configurations with various cryptographic implementations.',
       href: 'https://blindfold-demos.vercel.app/',
       isExternal: true,
-      icon: 'tool' as const,
+      icon: 'circuit-board' as const,
       areas: ['Cryptography', 'Tooling']
     },
     {
