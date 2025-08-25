@@ -1,23 +1,27 @@
 import React from 'react';
 import { ExternalLink, ArrowRight, Wrench, BookOpen, Github } from 'lucide-react';
 
-interface AppCardProps {
+export interface AppData {
   title: string;
   description: string;
   href: string;
   isExternal?: boolean;
   icon?: 'tool' | 'documentation' | 'github';
+  language?: string;
+  area?: string;
+}
+
+interface AppCardProps {
+  app: AppData;
   onClick?: () => void;
 }
 
 const AppCard: React.FC<AppCardProps> = ({ 
-  title, 
-  description, 
-  href, 
-  isExternal = false,
-  icon = 'tool',
+  app,
   onClick 
 }) => {
+  const { title, description, href, isExternal = false, icon = 'tool', language, area } = app;
+
   const handleClick = () => {
     if (onClick) {
       onClick();
@@ -71,6 +75,22 @@ const AppCard: React.FC<AppCardProps> = ({
       <p className="text-white/70 text-sm leading-relaxed group-hover:text-white/90 transition-colors">
         {description}
       </p>
+      
+      {/* Tags for language and area */}
+      {(language || area) && (
+        <div className="mt-3 flex flex-wrap gap-2">
+          {language && (
+            <span className="inline-flex items-center px-2 py-1 bg-blue-500/20 text-blue-200 rounded-md text-xs font-medium border border-blue-400/30">
+              {language}
+            </span>
+          )}
+          {area && (
+            <span className="inline-flex items-center px-2 py-1 bg-green-500/20 text-green-200 rounded-md text-xs font-medium border border-green-400/30">
+              {area}
+            </span>
+          )}
+        </div>
+      )}
       
       <div className="mt-4 flex items-center text-xs text-white/50 group-hover:text-white/70 transition-colors">
         <div className={`w-2 h-2 rounded-full mr-2 ${isExternal ? 'bg-orange-400' : 'bg-green-400'}`}></div>
