@@ -20,7 +20,8 @@ const FilterBar: React.FC<FilterBarProps> = ({
   selectedAreas,
   onLanguageChange,
   onAreaChange,
-  availableFilters
+  availableFilters,
+  apps
 }) => {
   const [isAreaDropdownOpen, setIsAreaDropdownOpen] = React.useState(false);
   const dropdownRef = React.useRef<HTMLDivElement>(null);
@@ -166,6 +167,7 @@ const FilterBar: React.FC<FilterBarProps> = ({
               )}
             </div>
           )}
+        </div>
       </div>
 
       {/* Active Filters Display */}
