@@ -8,25 +8,33 @@ export interface FilterOptions {
 
 interface FilterBarProps {
   selectedLanguage: string | null;
-  selectedArea: string | null;
+  selectedAreas: string[];
   onLanguageChange: (language: string | null) => void;
-  onAreaChange: (area: string | null) => void;
+  onAreaChange: (areas: string[]) => void;
   availableFilters: FilterOptions;
 }
 
 const FilterBar: React.FC<FilterBarProps> = ({
   selectedLanguage,
-  selectedArea,
+  selectedAreas,
   onLanguageChange,
   onAreaChange,
   availableFilters
 }) => {
   const clearAllFilters = () => {
     onLanguageChange(null);
-    onAreaChange(null);
+    onAreaChange([]);
   };
 
-  const hasActiveFilters = selectedLanguage || selectedArea;
+  const hasActiveFilters = selectedLanguage || selectedAreas.length > 0;
+
+  const handleAreaToggle = (area: string) => {
+    if (selectedAreas.includes(area)) {
+      onAreaChange(selectedAreas.filter(a => a !== area));
+    } else {
+      onAreaChange([...selectedAreas, area]);
+    }
+  };
 
   return (
     <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20 mb-8">
@@ -67,20 +75,21 @@ const FilterBar: React.FC<FilterBarProps> = ({
         {/* Area Filter */}
         <div>
           <label className="block text-sm font-medium text-white/80 mb-2">
-            Area
+            Areas
           </label>
-          <select
-            value={selectedArea || ''}
-            onChange={(e) => onAreaChange(e.target.value || null)}
-            className="w-full px-3 py-2 bg-white/20 backdrop-blur-sm border border-white/30 rounded-lg text-white placeholder-white/60 focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all"
-          >
-            <option value="" className="bg-gray-800 text-white">All Areas</option>
+          <div className="space-y-2 max-h-32 overflow-y-auto">
             {availableFilters.areas.map((area) => (
-              <option key={area} value={area} className="bg-gray-800 text-white">
-                {area}
-              </option>
+              <label key={area} className="flex items-center space-x-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={selectedAreas.includes(area)}
+                  onChange={() => handleAreaToggle(area)}
+                  className="w-4 h-4 text-blue-600 bg-white/20 border-white/30 rounded focus:ring-blue-500 focus:ring-2"
+                />
+                <span className="text-white/90 text-sm">{area}</span>
+              </label>
             ))}
-          </select>
+          </div>
         </div>
       </div>
 
@@ -98,17 +107,17 @@ const FilterBar: React.FC<FilterBarProps> = ({
               </button>
             </span>
           )}
-          {selectedArea && (
-            <span className="inline-flex items-center gap-1 px-3 py-1 bg-green-500/30 text-green-100 rounded-full text-sm border border-green-400/30">
+          {selectedAreas.map((area) => (
+            <span key={area} className="inline-flex items-center gap-1 px-3 py-1 bg-green-500/30 text-green-100 rounded-full text-sm border border-green-400/30">
               Area: {selectedArea}
               <button
-                onClick={() => onAreaChange(null)}
+                onClick={() => onAreaChange(selectedAreas.filter(a => a !== area))}
                 className="ml-1 hover:bg-green-400/30 rounded-full p-0.5 transition-colors"
               >
                 <X size={12} />
               </button>
             </span>
-          )}
+          ))}
         </div>
       )}
     </div>

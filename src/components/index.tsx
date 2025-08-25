@@ -7,7 +7,7 @@ import 'react-tooltip/dist/react-tooltip.css';
 const Index: React.FC = () => {
   const navigate = useNavigate();
   const [selectedLanguage, setSelectedLanguage] = React.useState<string | null>(null);
-  const [selectedArea, setSelectedArea] = React.useState<string | null>(null);
+  const [selectedAreas, setSelectedAreas] = React.useState<string[]>([]);
 
   const apps: AppData[] = [
     {
@@ -58,10 +58,10 @@ const Index: React.FC = () => {
   const filteredApps = React.useMemo(() => {
     return apps.filter(app => {
       const matchesLanguage = !selectedLanguage || app.language === selectedLanguage;
-      const matchesArea = !selectedArea || app.area === selectedArea;
+      const matchesArea = selectedAreas.length === 0 || (app.area && selectedAreas.includes(app.area));
       return matchesLanguage && matchesArea;
     });
-  }, [apps, selectedLanguage, selectedArea]);
+  }, [apps, selectedLanguage, selectedAreas]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-900 via-blue-500 to-indigo-600 py-12 px-4 relative overflow-hidden">
@@ -91,9 +91,9 @@ const Index: React.FC = () => {
         {/* Filter Bar */}
         <FilterBar
           selectedLanguage={selectedLanguage}
-          selectedArea={selectedArea}
+          selectedAreas={selectedAreas}
           onLanguageChange={setSelectedLanguage}
-          onAreaChange={setSelectedArea}
+          onAreaChange={setSelectedAreas}
           availableFilters={availableFilters}
         />
 
@@ -120,7 +120,7 @@ const Index: React.FC = () => {
         </div>
 
         {/* Results Summary */}
-        {(selectedLanguage || selectedArea) && (
+        {(selectedLanguage || selectedAreas.length > 0) && (
           <div className="text-center mb-8">
             <p className="text-white/70 text-sm">
               Showing {filteredApps.length} of {apps.length} tools
