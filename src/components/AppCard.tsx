@@ -8,7 +8,7 @@ export interface AppData {
   isExternal?: boolean;
   icon?: 'tool' | 'documentation' | 'github';
   language?: string;
-  area?: string;
+  areas?: string[];
 }
 
 interface AppCardProps {
@@ -20,7 +20,7 @@ const AppCard: React.FC<AppCardProps> = ({
   app,
   onClick 
 }) => {
-  const { title, description, href, isExternal = false, icon = 'tool', language, area } = app;
+  const { title, description, href, isExternal = false, icon = 'tool', language, areas } = app;
 
   const handleClick = () => {
     if (onClick) {
@@ -77,18 +77,18 @@ const AppCard: React.FC<AppCardProps> = ({
       </p>
       
       {/* Tags for language and area */}
-      {(language || area) && (
+      {(language || (areas && areas.length > 0)) && (
         <div className="mt-3 flex flex-wrap gap-2">
           {language && (
             <span className="inline-flex items-center px-2 py-1 bg-blue-500/20 text-blue-200 rounded-md text-xs font-medium border border-blue-400/30">
               {language}
             </span>
           )}
-          {area && (
-            <span className="inline-flex items-center px-2 py-1 bg-green-500/20 text-green-200 rounded-md text-xs font-medium border border-green-400/30">
+          {areas && areas.map((area) => (
+            <span key={area} className="inline-flex items-center px-2 py-1 bg-green-500/20 text-green-200 rounded-md text-xs font-medium border border-green-400/30">
               {area}
             </span>
-          )}
+          ))}
         </div>
       )}
       

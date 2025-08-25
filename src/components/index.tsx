@@ -17,7 +17,7 @@ const Index: React.FC = () => {
       isExternal: false,
       icon: 'tool' as const,
       language: 'TypeScript',
-      area: 'Authentication'
+      areas: ['Authentication']
     },
     {
       title: 'Nillion Documentation',
@@ -25,7 +25,7 @@ const Index: React.FC = () => {
       href: 'https://docs.nillion.com',
       isExternal: true,
       icon: 'documentation' as const,
-      area: 'Documentation'
+      areas: ['Documentation']
     },
     {
       title: 'Storage Tools',
@@ -34,7 +34,7 @@ const Index: React.FC = () => {
       isExternal: true,
       icon: 'tool' as const,
       language: 'TypeScript',
-      area: 'Storage'
+      areas: ['Storage']
     },
     {
       title: 'Blindfold Tool',
@@ -43,14 +43,14 @@ const Index: React.FC = () => {
       isExternal: true,
       icon: 'tool' as const,
       language: 'TypeScript',
-      area: 'Cryptography'
+      areas: ['Cryptography']
     }
   ];
 
   // Extract unique languages and areas for filter options
   const availableFilters: FilterOptions = React.useMemo(() => {
     const languages = [...new Set(apps.map(app => app.language).filter(Boolean))].sort();
-    const areas = [...new Set(apps.map(app => app.area).filter(Boolean))].sort();
+    const areas = [...new Set(apps.flatMap(app => app.areas || []))].sort();
     return { languages, areas };
   }, [apps]);
 
@@ -58,7 +58,7 @@ const Index: React.FC = () => {
   const filteredApps = React.useMemo(() => {
     return apps.filter(app => {
       const matchesLanguage = !selectedLanguage || app.language === selectedLanguage;
-      const matchesArea = selectedAreas.length === 0 || (app.area && selectedAreas.includes(app.area));
+      const matchesArea = selectedAreas.length === 0 || (app.areas && app.areas.some(area => selectedAreas.includes(area)));
       return matchesLanguage && matchesArea;
     });
   }, [apps, selectedLanguage, selectedAreas]);

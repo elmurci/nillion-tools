@@ -191,7 +191,7 @@ const FilterBar: React.FC<FilterBarProps> = ({
                     {area}
                   </span>
                   <span className="text-xs text-gray-500 group-hover:text-gray-600 transition-colors">
-                    {apps.filter(app => app.area === area).length}
+                    {apps.filter(app => app.areas && app.areas.includes(area)).length}
                   </span>
                 </label>
               ))}
