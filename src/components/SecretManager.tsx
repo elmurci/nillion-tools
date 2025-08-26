@@ -164,7 +164,7 @@ const SecretManager: React.FC = () => {
             <h3 className="text-lg font-semibold text-gray-800 mb-4">
               Minimum nodes required for recreation
             </h3>
-            <div className="flex gap-3 justify-center">
+            <div className="flex gap-3">
               {thresholdNumbers.map((threshold) => (
                 <button
                   key={threshold.id}
