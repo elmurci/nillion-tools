@@ -1,6 +1,15 @@
 import React, { useState } from 'react';
 import { ArrowLeft, Upload, RefreshCw, Shield, Key, Lock, Database, Server } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { config } from '../config';
+import { SecretVaultUserClient, SecretVaultBuilderClient } from '@nillion/secretvaults';
+import {
+  Command,
+  NucTokenBuilder,
+  Keypair,
+} from '@nillion/nuc';
+import * as blindfold from '@nillion/blindfold';
+import { v4 as uuidv4 } from 'uuid'
 
 interface SelectableIcon {
   id: string;
@@ -14,7 +23,7 @@ interface ThresholdNumber {
   number: number;
   selected: boolean;
 }
-const SecretManager: React.FC = () => {
+const ThresholdSecretSharer: React.FC = () => {
   const navigate = useNavigate();
   const [secret, setSecret] = useState('');
   const [isUploading, setIsUploading] = useState(false);
@@ -24,17 +33,13 @@ const SecretManager: React.FC = () => {
 
   const [thresholdNumbers, setThresholdNumbers] = useState<ThresholdNumber[]>([
     { id: '1', number: 1, selected: false },
-    { id: '2', number: 2, selected: false },
-    { id: '3', number: 3, selected: true }, // Default selection
-    { id: '4', number: 4, selected: false },
-    { id: '5', number: 5, selected: false },
+    { id: '2', number: 2, selected: true }, // Default selection
+    { id: '3', number: 3, selected: false },
   ]);
   const [icons, setIcons] = useState<SelectableIcon[]>([
-    { id: '1', name: 'Shield', icon: <Shield size={32} />, selected: false },
-    { id: '2', name: 'Key', icon: <Key size={32} />, selected: false },
-    { id: '3', name: 'Lock', icon: <Lock size={32} />, selected: false },
-    { id: '4', name: 'Database', icon: <Database size={32} />, selected: false },
-    { id: '5', name: 'Server', icon: <Server size={32} />, selected: false },
+    { id: '1', name: 'Staging 1', icon: <Database size={32} />, selected: false },
+    { id: '2', name: 'Staging 2', icon: <Database size={32} />, selected: false },
+    { id: '3', name: 'Staging 3', icon: <Database size={32} />, selected: false },
   ]);
 
   const selectedCount = icons.filter(icon => icon.selected).length;
@@ -54,8 +59,8 @@ const SecretManager: React.FC = () => {
     setIcons(prevIcons => 
       prevIcons.map(icon => {
         if (icon.id === id) {
-          // If trying to select and already at max (5), don't allow
-          if (!icon.selected && selectedCount >= 5) {
+          // If trying to select and already at max (3), don't allow
+          if (!icon.selected && selectedCount >= 3) {
             return icon;
           }
           return { ...icon, selected: !icon.selected };
@@ -75,11 +80,88 @@ const SecretManager: React.FC = () => {
     setUploadStatus(null);
 
     try {
-      // Simulate upload process
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      // Builder
+      const builderKeypair = Keypair.from(config.envs.thresholdDemo.builderPk);
+      const builder = await SecretVaultBuilderClient.from({
+        keypair: builderKeypair,
+        urls: {
+            chain: config.testnet.nilchain.endpoint,
+            auth: config.testnet.nilauth.endpoint,
+            dbs: config.testnet.nildb.nodes,
+        },
+        blindfold: {
+          operation: "sum",
+          useClusterKey: true,
+          threshold: selectedThreshold,
+        }
+      });
+
+      await builder.refreshRootToken();
+
+      const userKeypair = Keypair.from(config.envs.thresholdDemo.userPk);
+
+      // User
+      const user = await SecretVaultUserClient.from({
+          baseUrls: config.testnet.nildb.nodes,
+          keypair: userKeypair,
+          blindfold: {
+            operation: "sum",
+            useClusterKey: true,
+            threshold: selectedThreshold,
+          }
+      });
+
+      const delegation = NucTokenBuilder.extending(builder.rootToken)
+      .command(
+        new Command(['nil', 'db', 'data', 'create']),
+      )
+      .audience(userKeypair.toDid())
+      .expiresAt(Math.floor(Date.now() / 1000) + 3600)
+      .build(builderKeypair.privateKey());
+
+      console.log("delegation", delegation);
+      const docId = uuidv4();
+      const blindSecretKey = await blindfold.SecretKey.generate(config.testnet.nildb, {"sum": true}, 2);
+      const shares = await blindfold.encrypt(blindSecretKey, secret);
+      console.log("PACO", typeof shares, shares[0][1])
+      const userPrivateData = {
+          _id: docId,
+          name: "Threshold Demo Name",
+          secret: {
+            "%allot": "aquito", // await blindfold.encrypt(blindSecretKey, secret)
+          },
+      };
+
+      console.log(
+        "userPrivateData",
+        userPrivateData
+      );
+
+      const p = await user.createData(delegation, {
+          owner: userKeypair.toDidString(),
+          acl: {
+              grantee: config.envs.thresholdDemo.builderDid.toString(),
+              read: true,
+              write: false,
+              execute: true,
+          },
+          collection: config.envs.thresholdDemo.thresholdCollectionId,
+          data: [userPrivateData],
+      });
+
+      console.log("PEPEPEPEPEPE 2", p);
+
+      const result = await user.readData({
+        collection: config.envs.thresholdDemo.thresholdCollectionId,
+        document: docId,
+      });
+
+      console.log("RESULTADO", result);
+
       setUploadStatus('Secret successfully uploaded to nilDB nodes');
       setIsSecretUploaded(true);
     } catch (error) {
+      console.log("Error", error);
       setUploadStatus('Failed to upload secret');
       setIsSecretUploaded(false);
     } finally {
@@ -130,7 +212,7 @@ const SecretManager: React.FC = () => {
           </button>
         </div>
 
-        <div className="text-center mb-12">
+        <div className="text-center mb-6">
           <div className="inline-flex items-center justify-center w-20 h-20 bg-black/60 backdrop-blur-sm rounded-full mb-6">
             <img 
               src="/nillion-tools-logo.png" 
@@ -138,13 +220,24 @@ const SecretManager: React.FC = () => {
               className="logo"
             />
           </div>
-          <h1 className="text-5xl font-bold text-white mb-4 drop-shadow-lg">Secret Manager</h1>
+          <h1 className="text-5xl font-bold text-white mb-4 drop-shadow-lg">Thereshold Secret Sharer</h1>
           <p className="text-blue-100 max-w-2xl mx-auto text-lg leading-relaxed">
-            Upload secrets to nilDB nodes and recreate them using distributed storage.
+            Upload secrets to Testnet nilDB nodes and recreate them using distributed storage.
           </p>
         </div>
 
-        <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-2xl p-8 mb-8 border border-white/20">
+        {/* Info Section */}
+        <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
+          <h3 className="text-xl font-bold text-white mb-4">How it works</h3>
+          <div className="space-y-3 text-white/80">
+            <p>• <strong>Upload:</strong> Your secret is securely distributed across multiple nilDB nodes using secret sharing</p>
+            <p>• <strong>Threshold:</strong> Select the minimum number of shares required to recreate your secret</p>
+            <p>• <strong>Select Nodes:</strong> Choose which nodes will participate in recreating your secret</p>
+            <p>• <strong>Recreate:</strong> The selected nodes work together to reconstruct your original secret</p>
+          </div>
+        </div>
+
+        <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-2xl p-8 mb-8 border border-white/20 mt-4">
           {/* Secret Input */}
           <div className="mb-8">
             <label htmlFor="secret-input" className="block text-lg font-semibold text-gray-800 mb-3">
@@ -179,7 +272,7 @@ const SecretManager: React.FC = () => {
                 </button>
               ))}
             </div>
-            <p className="text-sm text-gray-600 mt-3 text-center">
+            <p className="text-sm text-gray-600 mt-3">
               Select the minimum number of nodes needed to recreate your secret
             </p>
           </div>
@@ -280,18 +373,9 @@ const SecretManager: React.FC = () => {
           )}
         </div>
 
-        {/* Info Section */}
-        <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
-          <h3 className="text-xl font-bold text-white mb-4">How it works</h3>
-          <div className="space-y-3 text-white/80">
-            <p>• <strong>Upload:</strong> Your secret is securely distributed across multiple nilDB nodes using secret sharing</p>
-            <p>• <strong>Select Nodes:</strong> Choose which nodes will participate in recreating your secret</p>
-            <p>• <strong>Recreate:</strong> The selected nodes work together to reconstruct your original secret</p>
-          </div>
-        </div>
       </div>
     </div>
   );
 };
 
-export default SecretManager;
+export default ThresholdSecretSharer;
