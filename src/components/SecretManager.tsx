@@ -9,6 +9,11 @@ interface SelectableIcon {
   selected: boolean;
 }
 
+interface ThresholdNumber {
+  id: string;
+  number: number;
+  selected: boolean;
+}
 const SecretManager: React.FC = () => {
   const navigate = useNavigate();
   const [secret, setSecret] = useState('');
@@ -17,6 +22,13 @@ const SecretManager: React.FC = () => {
   const [uploadStatus, setUploadStatus] = useState<string | null>(null);
   const [isSecretUploaded, setIsSecretUploaded] = useState(false);
 
+  const [thresholdNumbers, setThresholdNumbers] = useState<ThresholdNumber[]>([
+    { id: '1', number: 1, selected: false },
+    { id: '2', number: 2, selected: false },
+    { id: '3', number: 3, selected: true }, // Default selection
+    { id: '4', number: 4, selected: false },
+    { id: '5', number: 5, selected: false },
+  ]);
   const [icons, setIcons] = useState<SelectableIcon[]>([
     { id: '1', name: 'Shield', icon: <Shield size={32} />, selected: false },
     { id: '2', name: 'Key', icon: <Key size={32} />, selected: false },
@@ -26,7 +38,16 @@ const SecretManager: React.FC = () => {
   ]);
 
   const selectedCount = icons.filter(icon => icon.selected).length;
+  const selectedThreshold = thresholdNumbers.find(t => t.selected)?.number || 3;
 
+  const selectThreshold = (id: string) => {
+    setThresholdNumbers(prevNumbers => 
+      prevNumbers.map(num => ({
+        ...num,
+        selected: num.id === id
+      }))
+    );
+  };
   const toggleIcon = (id: string) => {
     if (!isSecretUploaded) return;
     
@@ -69,8 +90,8 @@ const SecretManager: React.FC = () => {
   const handleRecreateSecret = async () => {
     const selectedIcons = icons.filter(icon => icon.selected);
     
-    if (selectedIcons.length === 0) {
-      setUploadStatus('Please select at least one icon to recreate the secret');
+    if (selectedIcons.length < selectedThreshold) {
+      setUploadStatus(`Please select at least ${selectedThreshold} nodes to recreate the secret`);
       return;
     }
 
@@ -138,6 +159,30 @@ const SecretManager: React.FC = () => {
             />
           </div>
 
+          {/* Threshold Selection */}
+          <div className="mb-8">
+            <h3 className="text-lg font-semibold text-gray-800 mb-4">
+              Minimum nodes required for recreation
+            </h3>
+            <div className="flex gap-3 justify-center">
+              {thresholdNumbers.map((threshold) => (
+                <button
+                  key={threshold.id}
+                  onClick={() => selectThreshold(threshold.id)}
+                  className={`w-12 h-12 rounded-full border-2 font-bold text-lg transition-all duration-200 transform hover:scale-110 ${
+                    threshold.selected
+                      ? 'bg-gradient-to-br from-blue-500 to-indigo-600 border-blue-400 text-white shadow-lg'
+                      : 'bg-white/50 border-gray-300 text-gray-600 hover:bg-white/70 hover:border-gray-400'
+                  }`}
+                >
+                  {threshold.number}
+                </button>
+              ))}
+            </div>
+            <p className="text-sm text-gray-600 mt-3 text-center">
+              Select the minimum number of nodes needed to recreate your secret
+            </p>
+          </div>
           {/* Upload Button */}
           <div className="mb-8">
             <button
@@ -197,7 +242,7 @@ const SecretManager: React.FC = () => {
             <p className="text-sm text-gray-600 mt-3">
               {!isSecretUploaded 
                 ? 'Upload a secret first to enable node selection'
-                : 'Select up to 5 nilDB nodes to participate in secret recreation'
+                : `Select at least ${selectedThreshold} nilDB nodes to participate in secret recreation`
               }
             </p>
           </div>
@@ -206,7 +251,7 @@ const SecretManager: React.FC = () => {
           <div className="mb-6">
             <button
               onClick={handleRecreateSecret}
-             disabled={isRecreating || selectedCount === 0 || !isSecretUploaded}
+             disabled={isRecreating || selectedCount < selectedThreshold || !isSecretUploaded}
               className="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold text-lg rounded-xl hover:from-purple-700 hover:to-pink-700 focus:ring-4 focus:ring-purple-500/30 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105 disabled:transform-none flex items-center gap-3 justify-center"
             >
               {isRecreating ? (
