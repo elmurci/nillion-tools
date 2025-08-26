@@ -11,6 +11,14 @@ const Index: React.FC = () => {
 
   const apps: AppData[] = [
     {
+      title: 'Secret Manager',
+      description: 'Upload secrets to nilDB nodes and recreate them using distributed storage with secret sharing technology.',
+      href: '/secret-manager',
+      isExternal: false,
+      icon: 'tool' as const,
+      areas: ['Storage', 'UI Tools', 'Cryptography']
+    },
+    {
       title: 'NUC Viewer',
       description: 'Decode and inspect NUC (Nillion User Credential) tokens instantly. View token chains, signatures, and payload details.',
       href: '/nuc-viewer',
