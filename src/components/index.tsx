@@ -16,7 +16,7 @@ const Index: React.FC = () => {
       href: '/nuc-viewer',
       isExternal: false,
       icon: 'circuit-board' as const,
-      areas: ['Authentication', 'Tooling']
+      areas: ['Authentication', 'UI Tools']
     },
     {
       title: 'Nillion Documentation',
@@ -32,7 +32,7 @@ const Index: React.FC = () => {
       href: 'https://nillion-storage-tools.vercel.app/',
       isExternal: true,
       icon: 'circuit-board' as const,
-      areas: ['Storage', 'Tooling']
+      areas: ['Storage', 'UI Tools']
     },
     {
       title: 'Blindfold Tool',
@@ -40,7 +40,7 @@ const Index: React.FC = () => {
       href: 'https://blindfold-demos.vercel.app/',
       isExternal: true,
       icon: 'circuit-board' as const,
-      areas: ['Cryptography', 'Tooling']
+      areas: ['Cryptography', 'UI Tools']
     },
     {
       title: 'nuc-ts',
@@ -95,6 +95,14 @@ const Index: React.FC = () => {
       icon: 'tool' as const,
       language: 'Python',
       areas: ['AI', 'SDK']
+    },
+    {
+      title: 'Testnet Faucet',
+      description: 'A faucet for obtaining testnet tokens for the Nillion platform.',
+      href: 'https://faucet.testnet.nillion.com/',
+      isExternal: true,
+      icon: 'coins' as const,
+      areas: ['Faucet']
     }
   ];
 

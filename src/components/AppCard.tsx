@@ -1,12 +1,12 @@
 import React from 'react';
-import { ExternalLink, ArrowRight, Wrench, BookOpen, Github, CircuitBoard, Code } from 'lucide-react';
+import { ExternalLink, ArrowRight, Wrench, BookOpen, Github, CircuitBoard, Code, Coins } from 'lucide-react';
 
 export interface AppData {
   title: string;
   description: string;
   href: string;
   isExternal?: boolean;
-  icon?: 'tool' | 'documentation' | 'github' | 'circuit-board' | 'code-xml';
+  icon?: 'tool' | 'documentation' | 'github' | 'circuit-board' | 'code-xml' | 'coins';
   language?: string;
   areas?: string[];
 }
@@ -35,15 +35,17 @@ const AppCard: React.FC<AppCardProps> = ({
   const getIcon = () => {
     switch (icon) {
       case 'tool':
-        return <Wrench size={24} className="text-blue-300" />;
+        return <Wrench size={24} className="text-orange-300" />;
       case 'documentation':
-        return <BookOpen size={24} className="text-green-300" />;
+        return <BookOpen size={24} className="text-blue-300" />;
       case 'github':
         return <Github size={24} className="text-purple-300" />;
       case 'circuit-board':
         return <CircuitBoard size={24} className="text-red-300" />;
       case 'code':
         return <Code size={24} className="text-yellow-300" />;
+      case 'coins':
+        return <Coins size={24} className="text-green-300" />;
       default:
         return <Wrench size={24} className="text-blue-300" />;
     }
