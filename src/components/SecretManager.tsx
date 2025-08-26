@@ -15,6 +15,7 @@ const SecretManager: React.FC = () => {
   const [isUploading, setIsUploading] = useState(false);
   const [isRecreating, setIsRecreating] = useState(false);
   const [uploadStatus, setUploadStatus] = useState<string | null>(null);
+  const [isSecretUploaded, setIsSecretUploaded] = useState(false);
 
   const [icons, setIcons] = useState<SelectableIcon[]>([
     { id: '1', name: 'Shield', icon: <Shield size={32} />, selected: false },
@@ -27,6 +28,8 @@ const SecretManager: React.FC = () => {
   const selectedCount = icons.filter(icon => icon.selected).length;
 
   const toggleIcon = (id: string) => {
+    if (!isSecretUploaded) return;
+    
     setIcons(prevIcons => 
       prevIcons.map(icon => {
         if (icon.id === id) {
@@ -54,8 +57,10 @@ const SecretManager: React.FC = () => {
       // Simulate upload process
       await new Promise(resolve => setTimeout(resolve, 2000));
       setUploadStatus('Secret successfully uploaded to nilDB nodes');
+      setIsSecretUploaded(true);
     } catch (error) {
       setUploadStatus('Failed to upload secret');
+      setIsSecretUploaded(false);
     } finally {
       setIsUploading(false);
     }
@@ -164,13 +169,15 @@ const SecretManager: React.FC = () => {
                 <button
                   key={iconItem.id}
                   onClick={() => toggleIcon(iconItem.id)}
-                  disabled={!iconItem.selected && selectedCount >= 5}
+                  disabled={!isSecretUploaded || (!iconItem.selected && selectedCount >= 5)}
                   className={`relative p-6 rounded-xl border-2 transition-all duration-200 transform hover:scale-105 ${
-                    iconItem.selected
+                    !isSecretUploaded
+                      ? 'bg-gray-200/50 border-gray-300 text-gray-400 cursor-not-allowed opacity-50'
+                      : iconItem.selected
                       ? 'bg-gradient-to-br from-blue-500 to-indigo-600 border-blue-400 text-white shadow-lg'
                       : 'bg-white/50 border-gray-300 text-gray-600 hover:bg-white/70 hover:border-gray-400'
                   } ${
-                    !iconItem.selected && selectedCount >= 5
+                    (!iconItem.selected && selectedCount >= 5) || !isSecretUploaded
                       ? 'opacity-50 cursor-not-allowed hover:scale-100'
                       : 'cursor-pointer'
                   }`}
@@ -188,7 +195,10 @@ const SecretManager: React.FC = () => {
               ))}
             </div>
             <p className="text-sm text-gray-600 mt-3">
-              Select up to 5 nilDB nodes to participate in secret recreation
+              {!isSecretUploaded 
+                ? 'Upload a secret first to enable node selection'
+                : 'Select up to 5 nilDB nodes to participate in secret recreation'
+              }
             </p>
           </div>
 
@@ -196,7 +206,7 @@ const SecretManager: React.FC = () => {
           <div className="mb-6">
             <button
               onClick={handleRecreateSecret}
-              disabled={isRecreating || selectedCount === 0}
+             disabled={isRecreating || selectedCount === 0 || !isSecretUploaded}
               className="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold text-lg rounded-xl hover:from-purple-700 hover:to-pink-700 focus:ring-4 focus:ring-purple-500/30 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105 disabled:transform-none flex items-center gap-3 justify-center"
             >
               {isRecreating ? (
