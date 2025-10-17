@@ -11,8 +11,8 @@
   },
   "dependencies": {
     "@nillion/blindfold": "^0.1.0",
-    "@nillion/nuc": "^0.1.0",
-    "@nillion/secretvaults": "^0.1.5",
+    "@nillion/nuc": "next",
+    "@nillion/secretvaults": "next",
     "lucide-react": "^0.344.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",

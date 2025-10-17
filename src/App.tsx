@@ -1,6 +1,6 @@
 import Index from './components';
 import NUCDecoder from './components/NUCDecoder';
-import ThresholdSecretSharer from './components/ThresholdSecretSharer';
+// import ThresholdSecretSharer from './components/ThresholdSecretSharer';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 function App() {
@@ -9,7 +9,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Index />} />
         <Route path="/nuc-viewer" element={<NUCDecoder />} />
-        <Route path="/threshold-secret-sharer" element={<ThresholdSecretSharer />} />
+        {/* <Route path="/threshold-secret-sharer" element={<ThresholdSecretSharer />} /> */}
       </Routes>
     </Router>
   );

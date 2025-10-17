@@ -3,11 +3,6 @@ import { ArrowLeft, Upload, RefreshCw, Shield, Key, Lock, Database, Server } fro
 import { useNavigate } from 'react-router-dom';
 import { config } from '../config';
 import { SecretVaultUserClient, SecretVaultBuilderClient } from '@nillion/secretvaults';
-import {
-  Command,
-  NucTokenBuilder,
-  Keypair,
-} from '@nillion/nuc';
 import * as blindfold from '@nillion/blindfold';
 import { v4 as uuidv4 } from 'uuid'
 
@@ -112,9 +107,7 @@ const ThresholdSecretSharer: React.FC = () => {
       });
 
       const delegation = NucTokenBuilder.extending(builder.rootToken)
-      .command(
-        new Command(['nil', 'db', 'data', 'create']),
-      )
+      .command("nil/db/data/create")
       .audience(userKeypair.toDid())
       .expiresAt(Math.floor(Date.now() / 1000) + 3600)
       .build(builderKeypair.privateKey());

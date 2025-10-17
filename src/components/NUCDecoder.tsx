@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Copy, Key, AlertCircle, CheckCircle, ArrowLeft } from 'lucide-react';
-import { DecodedNucToken, NucToken, NucTokenEnvelope, NucTokenEnvelopeSchema } from '@nillion/nuc';
+import { DecodedNucToken, NucToken, NucTokenEnvelope, Codec } from '@nillion/nuc';
 import { useNavigate } from 'react-router-dom';
 import { Tooltip } from 'react-tooltip';
 import 'react-tooltip/dist/react-tooltip.css';
@@ -9,6 +9,12 @@ enum NucTokenType {
   ACTIVE = 'ACTIVE',
   CHAINED = 'CHAINED'
 }
+
+// TEST
+// const ether_token = "eyJ0eXAiOiJudWMiLCJhbGciOiJFUzI1NksiLCJ2ZXIiOiIxLjAuMCJ9.eyJpc3MiOiJkaWQ6ZXRocjoweDRmMzcxZDY4MjVDN0QzMDg0MUFiQjA1MDgyOGExMUJmOURmNTlGYWMiLCJhdWQiOiJkaWQ6bmlsOjAyZTZkNDBlNWI2ZWFhYzQ4MWQ4ZTIzMWE0NmU0N2RmYmVmNWI5MGRkNGExNDg1NThiMGNlZDI1YzVjMGJmMjU3MiIsInN1YiI6ImRpZDpldGhyOjB4NGYzNzFkNjgyNUM3RDMwODQxQWJCMDUwODI4YTExQmY5RGY1OUZhYyIsImNtZCI6Ii9uaWwvZGIvZGF0YS9maW5kIiwicG9sIjpbXSwibm9uY2UiOiIxNDM4YTYyMjhjMTg4Y2Q5NDFjM2NlN2VkMjgwZWVmNiIsInByZiI6WyIxODU3NzI4NTdiZTMwZDA4Yjk3NmFiYzA2NjUwZDhlZjIyMGEyYWUzZjRmYTljMTNjMDhjNGU5OGE4MDJkMmM1Il19.B799cP9jyX3KzfcIbr9b7qsWozDrXhZ1-B_o61yB8T4PZAqS4weIyg-PYuCIdNg3aSqbDVw09OBuDW46z0au-w";
+// const key_token = "eyJhbGciOiJFUzI1NksifQ.eyJpc3MiOiJkaWQ6bmlsOjAyZTZkNDBlNWI2ZWFhYzQ4MWQ4ZTIzMWE0NmU0N2RmYmVmNWI5MGRkNGExNDg1NThiMGNlZDI1YzVjMGJmMjU3MiIsImF1ZCI6ImRpZDprZXk6elEzc2hwR1ZlaXpBa0JSb1ZHYjV6NzFUeUQ3OGd4bkxmc3JjblJ1NzFwdWdHUkZrayIsInN1YiI6ImRpZDpldGhyOjB4NGYzNzFkNjgyNUM3RDMwODQxQWJCMDUwODI4YTExQmY5RGY1OUZhYyIsImNtZCI6Ii9uaWwvZGIvZGF0YS9maW5kIiwiYXJncyI6eyJpZCI6MTIzfSwibm9uY2UiOiIwNmU1MzdiZDhlOGMxNTE5NmI3N2I1ZmZjZjdjOWViOSIsInByZiI6WyI4YTM5OTE2OGMzYzhjZGQ4YzY3NTUwNmI5OGE5YTUwNGJiZTk4ZmYxOTFiYzljMTRhMTlhZWUwM2ZhYTEwNTdkIl19.B799cP9jyX3KzfcIbr9b7qsWozDrXhZ1-B_o61yB8T4PZAqS4weIyg-PYuCIdNg3aSqbDVw09OBuDW46z0au-w";
+// const chained_token = "eyJhbGciOiJFUzI1NksifQ.eyJpc3MiOiJkaWQ6bmlsOjAzMDdjNTUzODcyMGJlZGY4NmU5MjZlMTBmMmM1YjczYjExZTFiYmUzMzVjOWJiODJlOGQ2YzkyYjYyYjYyNmFhMiIsImF1ZCI6ImRpZDprZXk6elEzc2h1TjFwQ2VLSnJqSnJGRzdwUUc1MlQ5TlByY2hxVGRWRTlkQ2dMZ3ppWThKTiIsInN1YiI6ImRpZDpldGhyOjB4N2RlNTc2NTZhOENkN0I0YTJCZkQ4OGI3OTJEOWRDMDI1QzNlOGVGQiIsImNtZCI6Ii9uaWwvZGIvZGF0YS9maW5kIiwiYXJncyI6eyJpZCI6MTIzfSwibm9uY2UiOiI3OTIzMzA2ZTRlM2YwYmQxNDU1M2YxYTdkNTU2NWM1YyIsInByZiI6WyJjMWUyM2Q3MWIyODM2NDM0ZmYyODIzZjA3NzczYTViODBmNmFkOGI5MjVkMTI5YzlmYjUxNzQ4NWI3MDI1YWMzIl19.J4X3Ilhlhi_hYS1t_YqLCoF3_72Qzb6h1XgW5cl5CLhlvxumJ4ABnb7a-_HHhwVTwGzceLtmIwK-JxgdhQhBfQ/eyJ0eXAiOiJudWMiLCJhbGciOiJFUzI1NksiLCJ2ZXIiOiIxLjAuMCJ9.eyJpc3MiOiJkaWQ6ZXRocjoweDdkZTU3NjU2YThDZDdCNGEyQmZEODhiNzkyRDlkQzAyNUMzZThlRkIiLCJhdWQiOiJkaWQ6bmlsOjAzMDdjNTUzODcyMGJlZGY4NmU5MjZlMTBmMmM1YjczYjExZTFiYmUzMzVjOWJiODJlOGQ2YzkyYjYyYjYyNmFhMiIsInN1YiI6ImRpZDpldGhyOjB4N2RlNTc2NTZhOENkN0I0YTJCZkQ4OGI3OTJEOWRDMDI1QzNlOGVGQiIsImNtZCI6Ii9uaWwvZGIvZGF0YS9maW5kIiwicG9sIjpbXSwibm9uY2UiOiI5YTcyNDk2M2RhZTRjZTEzYjVmYzJiMzc1Y2U0YWI5OSIsInByZiI6WyJkMjM3NmY4Yjk1NWRjM2ZlZmY4MTVmNGZjY2QyNDg3YzAwNGY4YTE3NjM2MzMyOGY3N2YyYTdmMjIwMzRmNTgzIl19.5ZSTtOYiRNXYM0rqKKi9gCow8RM4jcLqEdsr43yRyXRZ7zhL1zAw-AYNv3TjVsOyWPHSLrpQi383zJAHm-kf7hw/eyJ0eXAiOiJudWMiLCJhbGciOiJFUzI1NksiLCJ2ZXIiOiIxLjAuMCJ9.eyJpc3MiOiJkaWQ6a2V5OnpRM3NocEF1MXBIMmJUUmRMTWtqekR6a0s2elN3WDRjRlk4N3hKRFhOOWVudnNmaTQiLCJhdWQiOiJkaWQ6ZXRocjoweDdkZTU3NjU2YThDZDdCNGEyQmZEODhiNzkyRDlkQzAyNUMzZThlRkIiLCJzdWIiOiJkaWQ6ZXRocjoweDdkZTU3NjU2YThDZDdCNGEyQmZEODhiNzkyRDlkQzAyNUMzZThlRkIiLCJjbWQiOiIvbmlsL2RiL2RhdGEiLCJwb2wiOltdLCJub25jZSI6ImRhZDUyNzY5MjYzZGU1MjZjOTFkMWMyMTljNzE2NmVjIiwicHJmIjpbXX0.9ysRInYpfXij5zqAtthptO_Gs4nYcqfrhEimzy6mfVw6DzAr-U1ugvIjAEY1O2Jd9GWSIQehIp0Zdo6zfyEUyg"
+// //
 
 type PolicyArray = [string, string, number | string];
 
@@ -36,9 +42,9 @@ const NUCDecoder: React.FC = () => {
   const createIdentityAliases = (nucEnvelope: NucTokenEnvelope) => {
     let i = 0;
     nucEnvelope.proofs.reverse().forEach((proof) => {
-      const issuer = proof.token.issuer.toString();
-      const audience = proof.token.audience.toString();
-      const subject = proof.token.subject.toString();
+      const issuer = proof.payload.iss.didString;
+      const audience = proof.payload.aud.didString;
+      const subject = proof.payload.sub.didString;
       if (!aliases[issuer]) {
         aliases[issuer] = `DID-${i + 1}`;
         i++;
@@ -54,9 +60,9 @@ const NUCDecoder: React.FC = () => {
         i++;
       }
     });
-    const tokenIssuer = nucEnvelope.token.token.issuer.toString();
-    const tokenAudience = nucEnvelope.token.token.audience.toString();
-    const tokenSubject = nucEnvelope.token.token.subject.toString();
+    const tokenIssuer = nucEnvelope.nuc.payload.iss.didString;
+    const tokenAudience = nucEnvelope.nuc.payload.aud.didString;
+    const tokenSubject = nucEnvelope.nuc.payload.sub.didString;
     if (!aliases[tokenIssuer]) {
         aliases[tokenIssuer] = `DID-${i + 1}`;
     }
@@ -88,25 +94,12 @@ const NUCDecoder: React.FC = () => {
       // eyJhbGciOiJFUzI1NksifQ.eyJpc3MiOiJkaWQ6bmlsOjAzZWNjODljNjRmODU2NjhlN2Q3Y2EyMjhkZjEwMzQxYjc1Zjg4NzVjZjBmMDAzMmNiOTlkMjI1ZGEwZmQyNTUwOSIsImF1ZCI6ImRpZDpuaWw6YWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhIiwic3ViIjoiZGlkOm5pbDowMzE0ZGI4ZDRkMzQxMDFiYTgwMTc0YjkzN2ZhMGE5MDAzNDlmNTEzZjZkNjMwOTc4MWUwMTViZDg1YzkzZTAwMDAiLCJjbWQiOiIvbmlsL2Jhci9mb28iLCJhcmdzIjp7ImJhciI6MTMzNywiZm9vIjo0Mn0sIm5vbmNlIjoiZjZjODQ1ZTgyM2NmOWYxZTQwM2M2ZWQzYTRjYWI5MzkiLCJwcmYiOlsiZmQ2ZDQzNzE5ZGFlYjI1NjdkNThkM2JiYWFkMDViMjk3NTkyYzRhZmJmZDA0MjdiNGJkZTU2YjVjZDIyODI4OCJdfQ.HFbkOcpS61YBtLCRJY4dwANC79P0GZzzHPK7z016iz0hwCTyQ56-3esjkFPOtdDkgzhNQB1Rc6-kclaC84FmKA/eyJhbGciOiJFUzI1NksifQ.eyJpc3MiOiJkaWQ6bmlsOjAzMTRkYjhkNGQzNDEwMWJhODAxNzRiOTM3ZmEwYTkwMDM0OWY1MTNmNmQ2MzA5NzgxZTAxNWJkODVjOTNlMDAwMCIsImF1ZCI6ImRpZDpuaWw6MDNlY2M4OWM2NGY4NTY2OGU3ZDdjYTIyOGRmMTAzNDFiNzVmODg3NWNmMGYwMDMyY2I5OWQyMjVkYTBmZDI1NTA5Iiwic3ViIjoiZGlkOm5pbDowMzE0ZGI4ZDRkMzQxMDFiYTgwMTc0YjkzN2ZhMGE5MDAzNDlmNTEzZjZkNjMwOTc4MWUwMTViZDg1YzkzZTAwMDAiLCJjbWQiOiIvbmlsL2JhciIsInBvbCI6W1siPT0iLCIuYXJncy5iYXIiLDEzMzddXSwibm9uY2UiOiJjODk4OTE3NzYzODE5OGQ2MmMxZDE0NGU0OWFhY2IzNyIsInByZiI6WyIzM2Y4OWUyOWUzZjFlZGQ1YzY1ZTNmNjY0NzVhNDg3MjVhOTA5NzcyY2I0ZTQ3ZjRlMjMxYWE4OGE3MTE4Y2ZjIl19.KKDipMYKidTm8GjrYCk2IRbJaVoc-kbJruxI4mPD_N4LqnXJIEv0TbDrl2fMOnxPvxGS9Aep6MEf4Zlauds1OA/eyJhbGciOiJFUzI1NksifQ.eyJpc3MiOiJkaWQ6bmlsOjAyMGJkMzlhZjEwMjNlN2M3ZGQwMGM4N2QwYjg1OTAyMjEyMmU0NzVhMzJhMjI0ZmNjODNmMmRlMThkODcyZWQ1NyIsImF1ZCI6ImRpZDpuaWw6MDMxNGRiOGQ0ZDM0MTAxYmE4MDE3NGI5MzdmYTBhOTAwMzQ5ZjUxM2Y2ZDYzMDk3ODFlMDE1YmQ4NWM5M2UwMDAwIiwic3ViIjoiZGlkOm5pbDowMzE0ZGI4ZDRkMzQxMDFiYTgwMTc0YjkzN2ZhMGE5MDAzNDlmNTEzZjZkNjMwOTc4MWUwMTViZDg1YzkzZTAwMDAiLCJjbWQiOiIvbmlsIiwicG9sIjpbWyI9PSIsIi5hcmdzLmZvbyIsNDJdLFsiPT0iLCIkLnJlcS5iYXIiLDEzMzddXSwibm9uY2UiOiJkMzcwODM3NTZhMzAzZjk0NjZjNWRmZjhmODRhYzM4YSIsInByZiI6W119.VP2yIlY6rad9diKrIX2_Q4K7tUpJAxLA1j-MdTG9jd5tHavOH2Zk31BVEv-3GNHoSulvbVw7ipVXgB70TlXU0A
 
       // 28a0e2a4c60a89d4e6f068eb6029362116c9695a1cfa46c9aeec48e263c3fcde0baa75c9204bf44db0eb9767cc3a7c4fbf1192f407a9e8c11fe1995ab9db3538
-      const decodedNuc = NucTokenEnvelopeSchema.parse(t);
+      const decodedNuc = Codec.decodeBase64Url(t);
 
-     createIdentityAliases(decodedNuc);
-
-      console.log("Aliases", JSON.stringify(aliases, null, 2));
-
-      console.log("Tokens:", t.split('/').length);
-
-      // console.log("NucTokenEnvelopeSchema PROOFS (0):", signatureHex(decodedNuc.proofs[0].signature));
-      // console.log("NucTokenEnvelopeSchema PROOFS (1):", signatureHex(decodedNuc.proofs[1].signature));
-      console.log("NucTokenEnvelopeSchema DECODED:", decodedNuc);
-
-      // const [headerPart, payloadPart, signaturePart] = parts;
-
-      // const header = JSON.parse(base64UrlDecode(headerPart));
-      // const payload = JSON.parse(base64UrlDecode(payloadPart));
+      createIdentityAliases(decodedNuc);
 
       setDecodedNUC(decodedNuc);
-    
+      
       const tokenChain: TokenChainItem[] = decodedNuc.proofs.map((proof, idx) => {
          return {
           id: `chained_token_${idx + 1}`,
@@ -122,7 +115,7 @@ const NUCDecoder: React.FC = () => {
           type: NucTokenType.ACTIVE,
           alias: `TOKEN`,
           isActive: true,
-          decoded: decodedNuc.token
+          decoded: decodedNuc.nuc
       });
       
       // Update the current token in the chain
@@ -174,6 +167,7 @@ const NUCDecoder: React.FC = () => {
   };
 
   const renderJSONSection = (data: any, type: string) => {
+
     const jsonString = JSON.stringify(data, null, 2);
     
     return (
@@ -299,23 +293,33 @@ const NUCDecoder: React.FC = () => {
                   <React.Fragment key={token.id}>
                     {/* Token Box */}
                     <div className="flex flex-col items-center">
-                      <button
+                        <button
                         onClick={() => setSelectedToken(token)}
                         className={`relative rounded-lg border-2 flex items-center justify-center mb-2 shadow-xl transition-all duration-300 transform hover:scale-105 ${
                           selectedToken?.id === token.id
-                            ? `w-32 h-24 bg-gradient-to-br ${getStatusColor(token.type)} border-white/70 scale-110`
-                            : selectedToken?.type === NucTokenType.CHAINED
-                            ? `w-28 h-20 bg-gradient-to-br ${getStatusColor(token.type)} border-white/50`
-                            : 'w-24 h-16 bg-white/20 backdrop-blur-sm border-white/30 hover:bg-white/30'
+                          ? `w-32 h-24 bg-gradient-to-br ${getStatusColor(token.type)} border-white/70 scale-110`
+                          : selectedToken?.type === NucTokenType.CHAINED
+                          ? `w-28 h-20 bg-gradient-to-br ${getStatusColor(token.type)} border-white/50`
+                          : 'w-24 h-16 bg-white/20 backdrop-blur-sm border-white/30 hover:bg-white/30'
                         }`}
-                      >
-                        <Key className="w-8 h-8 text-white" />
+                        >
+                        {token.decoded?.payload?.iss.method === "ethr" ? (
+                          <img
+                          src="/ethereum-eth-logo.svg"
+                          alt="Key issuer"
+                          className="w-6 h-6"
+                          />
+                        ) : (
+                          <Key className="w-8 h-8 text-white" />
+                        )}
+                        
                         <div className={`absolute -top-1 -right-1 w-4 h-4 ${getStatusIndicatorColor(token.type)} rounded-full border-2 border-white animate-pulse` }></div>
-                      </button>
+                        </button>
                       <span className={`text-sm font-medium mb-1 ${
                         selectedToken?.type === NucTokenType.CHAINED ? 'text-white font-bold' : 'text-white/70'
                       }`}>
-                        Issued by <span data-tooltip-id="did-tooltip" data-tooltip-content={token.decoded?.token.issuer.toString()} data-tooltip-place="top">{aliases[token.decoded?.token.issuer.toString()!]}</span>
+                        Issued by 
+                        <span data-tooltip-id="did-tooltip" data-tooltip-content={token.decoded?.payload.iss.didString} data-tooltip-place="top">{aliases[token.decoded?.payload.iss.didString!]}</span>
                       </span>
                       <span className={`text-xs px-2 py-1 rounded-full ${
                         token.type === NucTokenType.CHAINED ? 'bg-gray-500/20 text-gray-200' : 'bg-green-500/20 text-green-200'
@@ -356,19 +360,19 @@ const NUCDecoder: React.FC = () => {
                   <div className={`w-3 h-3 ${getStatusIndicatorColor(selectedToken?.type || '')} rounded-full`}></div>
                   <span className="text-white/80 text-xl">
                     Issued by 
-                    <span className="inline-flex items-center rounded-md bg-indigo-50 px-2 py-1 mx-3 font-medium text-indigo-700 ring-1 ring-indigo-600/20 ring-inset" data-tooltip-id="did-tooltip" data-tooltip-content={selectedToken?.decoded?.token.issuer.toString()!} data-tooltip-place="top">{aliases[selectedToken?.decoded?.token.issuer.toString()!]}</span> 
-                    to <span className="inline-flex items-center rounded-md bg-green-50 px-2 py-1 mx-3 font-medium text-green-700 ring-1 ring-green-600/20 ring-inset" data-tooltip-id="did-tooltip" data-tooltip-content={selectedToken?.decoded?.token.audience.toString()} data-tooltip-place="top">{aliases[selectedToken?.decoded?.token.audience.toString()!]}</span> 
+                    <span className="inline-flex items-center rounded-md bg-indigo-50 px-2 py-1 mx-3 font-medium text-indigo-700 ring-1 ring-indigo-600/20 ring-inset" data-tooltip-id="did-tooltip" data-tooltip-content={selectedToken?.decoded?.payload.iss.didString!} data-tooltip-place="top">{aliases[selectedToken?.decoded?.payload.iss.didString!]}</span> 
+                    to <span className="inline-flex items-center rounded-md bg-green-50 px-2 py-1 mx-3 font-medium text-green-700 ring-1 ring-green-600/20 ring-inset" data-tooltip-id="did-tooltip" data-tooltip-content={selectedToken?.decoded?.payload.aud.didString} data-tooltip-place="top">{aliases[selectedToken?.decoded?.payload.aud.didString!]}</span> 
                     to perform  
-                    <span className="inline-flex items-center rounded-md bg-purple-50 px-2 py-1 mx-3 font-medium text-purple-700 ring-1 ring-purple-600/20 ring-inset">{selectedToken?.decoded?.token.command.toString()!}</span>
+                    <span className="inline-flex items-center rounded-md bg-purple-50 px-2 py-1 mx-3 font-medium text-purple-700 ring-1 ring-purple-600/20 ring-inset">{selectedToken?.decoded?.payload.cmd!}</span>
                     on 
-                    <span className="inline-flex items-center rounded-md bg-yellow-50 px-2 py-1 mx-3 font-medium text-yellow-700 ring-1 ring-yellow-600/20 ring-inset" data-tooltip-id="did-tooltip" data-tooltip-content={selectedToken?.decoded?.token.subject.toString()} data-tooltip-place="top">{aliases[selectedToken?.decoded?.token.subject.toString()!]}</span>
-                    { JSON.parse(selectedToken.decoded?.token.toString()!).pol && JSON.parse(selectedToken.decoded?.token.toString()!).pol.length > 0 && (
+                    <span className="inline-flex items-center rounded-md bg-yellow-50 px-2 py-1 mx-3 font-medium text-yellow-700 ring-1 ring-yellow-600/20 ring-inset" data-tooltip-id="did-tooltip" data-tooltip-content={selectedToken?.decoded?.payload.sub.didString} data-tooltip-place="top">{aliases[selectedToken?.decoded?.payload.sub.didString!]}</span>
+                    { selectedToken.decoded?.payload.pol && selectedToken.decoded?.payload.pol.length > 0 && (
                       <div className="mt-2">
                       with arguments
                         <span className="inline-flex items-center rounded-md bg-pink-50 px-2 py-1 mx-3 font-medium text-pink-700 ring-1 ring-pink-600/20 ring-inset text-sm">
                         { 
                           (() => {
-                            const pol = JSON.parse(selectedToken.decoded?.token.toString()!).pol;
+                            const pol = selectedToken.decoded?.payload.pol;
                             if (Array.isArray(pol)) {
                               return pol.map(([operator, path, value]: PolicyArray) => `${path} ${operator} ${value}`).join(', ');
                             }
@@ -378,11 +382,11 @@ const NUCDecoder: React.FC = () => {
                         </span>
                       </div>
                     )}
-                    { JSON.parse(selectedToken.decoded?.token.toString()!).exp && (
+                    { selectedToken.decoded?.payload.exp && (
                       <div className="mt-2">
                       expiring
                         <span className="inline-flex items-center rounded-md bg-pink-50 px-2 py-1 mx-3 font-medium text-pink-700 ring-1 ring-pink-600/20 ring-inset text-sm">
-                        { formatTimestamp(JSON.parse(selectedToken.decoded?.token.toString()!).exp) }
+                        { formatTimestamp(selectedToken.decoded?.payload.exp) }
                         </span>
                       </div>
                     )}
@@ -405,7 +409,7 @@ const NUCDecoder: React.FC = () => {
         {selectedToken && (
           <div className="space-y-8">
             {/* {renderJSONSection('Header', getSelectedTokenData()!.token.issuer, 'header')} */}
-            {renderJSONSection(selectedToken?.decoded?.token.toJson(), 'payload')}
+            {renderJSONSection(selectedToken?.decoded?.payload, 'payload')}
             
             <div className="bg-white/80 backdrop-blur-sm rounded-xl p-6 border border-white/20 shadow-lg hover:shadow-xl transition-all duration-300">
               <div className="flex justify-between items-center mb-4">
