@@ -10,14 +10,14 @@ const Index: React.FC = () => {
   const [selectedAreas, setSelectedAreas] = React.useState<string[]>([]);
 
   const apps: AppData[] = [
-    // {
-    //   title: 'Threshold Secret Sharer',
-    //   description: 'Upload secrets to nilDB nodes and recreate them using distributed storage with threshold secret sharing technology.',
-    //   href: '/threshold-secret-sharer',
-    //   isExternal: false,
-    //   icon: 'tool' as const,
-    //   areas: ['Storage', 'UI Tools', 'Cryptography']
-    // },
+    {
+      title: 'Threshold Secret Sharer',
+      description: 'Threshold secret sharing with tamper detection that identifies corrupted nodes and recovers the original secret using honest participants.',
+      href: '/threshold-secret-sharer',
+      isExternal: false,
+      icon: 'tool' as const,
+      areas: ['UI Tools', 'Cryptography']
+    },
     {
       title: 'NUC Viewer',
       description: 'Decode and inspect NUC (Nillion User Credential) tokens instantly. View token chains, signatures, and payload details.',
