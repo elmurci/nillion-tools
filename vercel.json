@@ -1,12 +1,18 @@
 {
   "version": 2,
   "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "vite",
+  "devCommand": "pnpm dev",
+  "buildCommand": "pnpm build",
+  "installCommand": "pnpm install --no-frozen-lockfile",
+  "outputDirectory": "dist",
   "functions": {
     "api/*.py": {
-      "runtime": "@vercel/python@4.0.0"
+      "maxDuration": 10
     }
   },
   "rewrites": [
+    { "source": "/api/:path*", "destination": "/api/:path*" },
     { "source": "/(.*)", "destination": "/index.html" }
   ]
 }

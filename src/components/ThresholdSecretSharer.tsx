@@ -1,4 +1,6 @@
 import { useState, useCallback } from 'react';
+import { ArrowLeft } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || '';
 
@@ -20,21 +22,15 @@ interface CombinationResult {
 }
 
 interface EncryptResponse {
-  statusCode: number;
-  body: {
-    shares: string[];
-    runtime: string;
-    error?: string;
-  };
+  shares: string[];
+  runtime: string;
+  error?: string;
 }
 
 interface DecryptResponse {
-  statusCode: number;
-  body: {
-    decrypted: string;
-    runtime: string;
-    error?: string;
-  };
+  decrypted: string;
+  runtime: string;
+  error?: string;
 }
 
 const NodeCard = ({ nodeId, share, onShareChange, isStored, isMalicious, isClean, successCount, failCount }: NodeCardProps) => {
@@ -103,6 +99,7 @@ const getCombinations = (n: number, k: number): number[][] => {
 };
 
 export default function SecretSharingDemo() {
+  const navigate = useNavigate();
   const [secret, setSecret] = useState<string>('');
   const [nodeCount, setNodeCount] = useState<number>(4);
   const [threshold, setThreshold] = useState<number>(3);
@@ -146,11 +143,7 @@ export default function SecretSharingDemo() {
     
     const data: DecryptResponse = await response.json();
     
-    if (data.statusCode !== 200) {
-      throw new Error(data.body?.error || 'Decryption failed');
-    }
-    
-    return data.body.decrypted;
+    return data.decrypted;
   };
 
   const handleStore = useCallback(async (): Promise<void> => {
@@ -178,12 +171,8 @@ export default function SecretSharingDemo() {
       
       const data: EncryptResponse = await response.json();
       
-      if (data.statusCode !== 200) {
-        throw new Error(data.body?.error || 'Encryption failed');
-      }
-      
-      setShares(data.body.shares);
-      setOriginalShares([...data.body.shares]);
+      setShares(data.shares);
+      setOriginalShares([...data.shares]);
       setIsStored(true);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Unknown error');
@@ -193,7 +182,7 @@ export default function SecretSharingDemo() {
   }, [secret, nodeCount, threshold]);
 
   const handleShareChange = (nodeIdx: number, newValue: string): void => {
-    setShares(prev => {
+    setShares((prev: any) => {
       const updated = [...prev];
       updated[nodeIdx] = newValue;
       return updated;
@@ -317,6 +306,18 @@ export default function SecretSharingDemo() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 p-6">
       <div className="max-w-4xl mx-auto">
+
+        {/* Back Button */}
+        <div className="mb-6">
+          <button
+            onClick={() => navigate('/')}
+            className="flex items-center gap-2 px-4 py-2 bg-white/20 backdrop-blur-sm text-white font-semibold rounded-lg hover:bg-white/30 focus:ring-4 focus:ring-white/30 transition-all duration-200 shadow-lg hover:shadow-xl border border-white/20 transform hover:scale-105"
+          >
+            <ArrowLeft size={18} />
+            Back 
+          </button>
+        </div>
+        
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-white mb-2">Blindfold Secret Sharing</h1>
           <p className="text-purple-200 text-sm">
