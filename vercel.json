@@ -6,13 +6,7 @@
   "buildCommand": "pnpm build",
   "installCommand": "pnpm install --no-frozen-lockfile",
   "outputDirectory": "dist",
-  "functions": {
-    "api/*.py": {
-      "maxDuration": 10
-    }
-  },
   "rewrites": [
-    { "source": "/api/:path*", "destination": "/api/:path*" },
     { "source": "/(.*)", "destination": "/index.html" }
   ]
 }

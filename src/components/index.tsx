@@ -11,12 +11,12 @@ const Index: React.FC = () => {
 
   const apps: AppData[] = [
     {
-      title: 'Threshold Secret Sharer',
-      description: 'Threshold secret sharing with tamper detection that identifies corrupted nodes and recovers the original secret using honest participants.',
-      href: '/threshold-secret-sharer',
-      isExternal: false,
-      icon: 'tool' as const,
-      areas: ['UI Tools', 'Cryptography']
+      title: 'Blindfold Tool',
+      description: 'Blindfold supports store (with threshold), match, and sum operations across single-node and multi-node configurations with various cryptographic implementations.',
+      href: 'https://blindfold.nillion.com/',
+      isExternal: true,
+      icon: 'circuit-board' as const,
+      areas: ['Cryptography', 'UI Tools']
     },
     {
       title: 'NUC Viewer',
@@ -41,14 +41,6 @@ const Index: React.FC = () => {
       isExternal: true,
       icon: 'circuit-board' as const,
       areas: ['Storage', 'UI Tools']
-    },
-    {
-      title: 'Blindfold Tool',
-      description: 'Blindfold supports store, match, and sum operations across single-node and multi-node configurations with various cryptographic implementations.',
-      href: 'https://blindfold-demos.vercel.app/',
-      isExternal: true,
-      icon: 'circuit-board' as const,
-      areas: ['Cryptography', 'UI Tools']
     },
     {
       title: 'nuc-ts',

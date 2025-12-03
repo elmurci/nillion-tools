@@ -9,7 +9,6 @@ function App() {
       <Routes>
         <Route path="/" element={<Index />} />
         <Route path="/nuc-viewer" element={<NUCDecoder />} />
-        <Route path="/threshold-secret-sharer" element={<ThresholdSecretSharer />} />
       </Routes>
     </Router>
   );
