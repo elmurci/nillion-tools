@@ -12,8 +12,8 @@ importers:
         specifier: ^0.1.0
         version: 0.1.0
       '@nillion/nuc':
-        specifier: 1.1.0
-        version: 1.1.0(pino@10.1.0)(typescript@5.9.3)
+        specifier: 1.1.1
+        version: 1.1.1(pino@10.1.0)(typescript@5.9.3)
       '@nillion/secretvaults':
         specifier: 1.1.0
         version: 1.1.0(typescript@5.9.3)
@@ -460,12 +460,6 @@ packages:
   '@nillion/blindfold@0.1.0':
     resolution: {integrity: sha512-tqdfoxk+lTTD9llr7iEyb49iWGGVlBDpF6erx8HWvrL6RZFrjr+0sN9XNZGB4OfFVa7ZsduXcAso1msAObMeuw==}
     engines: {node: '>=20'}
-
-  '@nillion/nuc@1.1.0':
-    resolution: {integrity: sha512-m7V6DZHjlT3hx0bvw3jxMVijyoCdfPgvBgGdGp/av7Wpq/mPPTOPSph/DUnk2EMkLLNHWuh6DJuDSXaK6PgpRg==}
-    engines: {node: '>=23'}
-    peerDependencies:
-      pino: ^9.7.0
 
   '@nillion/nuc@1.1.1':
     resolution: {integrity: sha512-M5mTAiDB3PzWdlbgBt9Eu9w/2CmYO2SUiz39ParMWrQtppkNzW+QagX3z+EbeVAt4lLf6ygL4mLRJFjlBjp31g==}
@@ -2023,14 +2017,6 @@ packages:
     resolution: {integrity: sha512-XQegIaBTVUjSHliKqcnFqYypAd4S+WCYt5NIeRs6w/UAry7z8Y9j5ZwRRL4kzq9U3sD6v+85er9FvkEaBpji2w==}
     hasBin: true
 
-  viem@2.40.3:
-    resolution: {integrity: sha512-feYfEpbgjRkZYQpwcgxqkWzjxHI5LSDAjcGetHHwDRuX9BRQHUdV8ohrCosCYpdEhus/RknD3/bOd4qLYVPPuA==}
-    peerDependencies:
-      typescript: '>=5.0.4'
-    peerDependenciesMeta:
-      typescript:
-        optional: true
-
   viem@2.41.2:
     resolution: {integrity: sha512-LYliajglBe1FU6+EH9mSWozp+gRA/QcHfxeD9Odf83AdH5fwUS7DroH4gHvlv6Sshqi1uXrYFA2B/EOczxd15g==}
     peerDependencies:
@@ -2501,26 +2487,6 @@ snapshots:
       bigint-crypto-utils: 3.3.0
       libsodium-wrappers-sumo: 0.7.15
       paillier-bigint: 3.4.3
-
-  '@nillion/nuc@1.1.0(pino@10.1.0)(typescript@5.9.3)':
-    dependencies:
-      '@bufbuild/protobuf': 2.10.1
-      '@cosmjs/proto-signing': 0.37.0
-      '@cosmjs/stargate': 0.37.0
-      '@noble/curves': 2.0.1
-      '@noble/hashes': 2.0.1
-      '@scure/base': 2.0.0
-      es-toolkit: 1.42.0
-      http-status-codes: 2.3.0
-      ky: 1.14.0
-      multiformats: 13.4.1
-      pino: 10.1.0
-      viem: 2.40.3(typescript@5.9.3)(zod@4.1.13)
-      zod: 4.1.13
-    transitivePeerDependencies:
-      - bufferutil
-      - typescript
-      - utf-8-validate
 
   '@nillion/nuc@1.1.1(pino@10.1.0)(typescript@5.9.3)':
     dependencies:
@@ -4234,23 +4200,6 @@ snapshots:
   uuid@11.1.0: {}
 
   uuid@13.0.0: {}
-
-  viem@2.40.3(typescript@5.9.3)(zod@4.1.13):
-    dependencies:
-      '@noble/curves': 1.9.1
-      '@noble/hashes': 1.8.0
-      '@scure/bip32': 1.7.0
-      '@scure/bip39': 1.6.0
-      abitype: 1.1.0(typescript@5.9.3)(zod@4.1.13)
-      isows: 1.0.7(ws@8.18.3)
-      ox: 0.9.6(typescript@5.9.3)(zod@4.1.13)
-      ws: 8.18.3
-    optionalDependencies:
-      typescript: 5.9.3
-    transitivePeerDependencies:
-      - bufferutil
-      - utf-8-validate
-      - zod
 
   viem@2.41.2(typescript@5.9.3)(zod@4.1.13):
     dependencies:
