@@ -10,11 +10,7 @@ enum NucTokenType {
   CHAINED = 'CHAINED'
 }
 
-// TEST
-// const ether_token = "eyJ0eXAiOiJudWMiLCJhbGciOiJFUzI1NksiLCJ2ZXIiOiIxLjAuMCJ9.eyJpc3MiOiJkaWQ6ZXRocjoweDRmMzcxZDY4MjVDN0QzMDg0MUFiQjA1MDgyOGExMUJmOURmNTlGYWMiLCJhdWQiOiJkaWQ6bmlsOjAyZTZkNDBlNWI2ZWFhYzQ4MWQ4ZTIzMWE0NmU0N2RmYmVmNWI5MGRkNGExNDg1NThiMGNlZDI1YzVjMGJmMjU3MiIsInN1YiI6ImRpZDpldGhyOjB4NGYzNzFkNjgyNUM3RDMwODQxQWJCMDUwODI4YTExQmY5RGY1OUZhYyIsImNtZCI6Ii9uaWwvZGIvZGF0YS9maW5kIiwicG9sIjpbXSwibm9uY2UiOiIxNDM4YTYyMjhjMTg4Y2Q5NDFjM2NlN2VkMjgwZWVmNiIsInByZiI6WyIxODU3NzI4NTdiZTMwZDA4Yjk3NmFiYzA2NjUwZDhlZjIyMGEyYWUzZjRmYTljMTNjMDhjNGU5OGE4MDJkMmM1Il19.B799cP9jyX3KzfcIbr9b7qsWozDrXhZ1-B_o61yB8T4PZAqS4weIyg-PYuCIdNg3aSqbDVw09OBuDW46z0au-w";
-// const key_token = "eyJhbGciOiJFUzI1NksifQ.eyJpc3MiOiJkaWQ6bmlsOjAyZTZkNDBlNWI2ZWFhYzQ4MWQ4ZTIzMWE0NmU0N2RmYmVmNWI5MGRkNGExNDg1NThiMGNlZDI1YzVjMGJmMjU3MiIsImF1ZCI6ImRpZDprZXk6elEzc2hwR1ZlaXpBa0JSb1ZHYjV6NzFUeUQ3OGd4bkxmc3JjblJ1NzFwdWdHUkZrayIsInN1YiI6ImRpZDpldGhyOjB4NGYzNzFkNjgyNUM3RDMwODQxQWJCMDUwODI4YTExQmY5RGY1OUZhYyIsImNtZCI6Ii9uaWwvZGIvZGF0YS9maW5kIiwiYXJncyI6eyJpZCI6MTIzfSwibm9uY2UiOiIwNmU1MzdiZDhlOGMxNTE5NmI3N2I1ZmZjZjdjOWViOSIsInByZiI6WyI4YTM5OTE2OGMzYzhjZGQ4YzY3NTUwNmI5OGE5YTUwNGJiZTk4ZmYxOTFiYzljMTRhMTlhZWUwM2ZhYTEwNTdkIl19.B799cP9jyX3KzfcIbr9b7qsWozDrXhZ1-B_o61yB8T4PZAqS4weIyg-PYuCIdNg3aSqbDVw09OBuDW46z0au-w";
-// const chained_token = "eyJhbGciOiJFUzI1NksifQ.eyJpc3MiOiJkaWQ6bmlsOjAzMDdjNTUzODcyMGJlZGY4NmU5MjZlMTBmMmM1YjczYjExZTFiYmUzMzVjOWJiODJlOGQ2YzkyYjYyYjYyNmFhMiIsImF1ZCI6ImRpZDprZXk6elEzc2h1TjFwQ2VLSnJqSnJGRzdwUUc1MlQ5TlByY2hxVGRWRTlkQ2dMZ3ppWThKTiIsInN1YiI6ImRpZDpldGhyOjB4N2RlNTc2NTZhOENkN0I0YTJCZkQ4OGI3OTJEOWRDMDI1QzNlOGVGQiIsImNtZCI6Ii9uaWwvZGIvZGF0YS9maW5kIiwiYXJncyI6eyJpZCI6MTIzfSwibm9uY2UiOiI3OTIzMzA2ZTRlM2YwYmQxNDU1M2YxYTdkNTU2NWM1YyIsInByZiI6WyJjMWUyM2Q3MWIyODM2NDM0ZmYyODIzZjA3NzczYTViODBmNmFkOGI5MjVkMTI5YzlmYjUxNzQ4NWI3MDI1YWMzIl19.J4X3Ilhlhi_hYS1t_YqLCoF3_72Qzb6h1XgW5cl5CLhlvxumJ4ABnb7a-_HHhwVTwGzceLtmIwK-JxgdhQhBfQ/eyJ0eXAiOiJudWMiLCJhbGciOiJFUzI1NksiLCJ2ZXIiOiIxLjAuMCJ9.eyJpc3MiOiJkaWQ6ZXRocjoweDdkZTU3NjU2YThDZDdCNGEyQmZEODhiNzkyRDlkQzAyNUMzZThlRkIiLCJhdWQiOiJkaWQ6bmlsOjAzMDdjNTUzODcyMGJlZGY4NmU5MjZlMTBmMmM1YjczYjExZTFiYmUzMzVjOWJiODJlOGQ2YzkyYjYyYjYyNmFhMiIsInN1YiI6ImRpZDpldGhyOjB4N2RlNTc2NTZhOENkN0I0YTJCZkQ4OGI3OTJEOWRDMDI1QzNlOGVGQiIsImNtZCI6Ii9uaWwvZGIvZGF0YS9maW5kIiwicG9sIjpbXSwibm9uY2UiOiI5YTcyNDk2M2RhZTRjZTEzYjVmYzJiMzc1Y2U0YWI5OSIsInByZiI6WyJkMjM3NmY4Yjk1NWRjM2ZlZmY4MTVmNGZjY2QyNDg3YzAwNGY4YTE3NjM2MzMyOGY3N2YyYTdmMjIwMzRmNTgzIl19.5ZSTtOYiRNXYM0rqKKi9gCow8RM4jcLqEdsr43yRyXRZ7zhL1zAw-AYNv3TjVsOyWPHSLrpQi383zJAHm-kf7hw/eyJ0eXAiOiJudWMiLCJhbGciOiJFUzI1NksiLCJ2ZXIiOiIxLjAuMCJ9.eyJpc3MiOiJkaWQ6a2V5OnpRM3NocEF1MXBIMmJUUmRMTWtqekR6a0s2elN3WDRjRlk4N3hKRFhOOWVudnNmaTQiLCJhdWQiOiJkaWQ6ZXRocjoweDdkZTU3NjU2YThDZDdCNGEyQmZEODhiNzkyRDlkQzAyNUMzZThlRkIiLCJzdWIiOiJkaWQ6ZXRocjoweDdkZTU3NjU2YThDZDdCNGEyQmZEODhiNzkyRDlkQzAyNUMzZThlRkIiLCJjbWQiOiIvbmlsL2RiL2RhdGEiLCJwb2wiOltdLCJub25jZSI6ImRhZDUyNzY5MjYzZGU1MjZjOTFkMWMyMTljNzE2NmVjIiwicHJmIjpbXX0.9ysRInYpfXij5zqAtthptO_Gs4nYcqfrhEimzy6mfVw6DzAr-U1ugvIjAEY1O2Jd9GWSIQehIp0Zdo6zfyEUyg"
-// //
+const TEST_TOKEN = "eyJhbGciOiJFUzI1NksifQ.eyJpc3MiOiJkaWQ6bmlsOjAzZWNjODljNjRmODU2NjhlN2Q3Y2EyMjhkZjEwMzQxYjc1Zjg4NzVjZjBmMDAzMmNiOTlkMjI1ZGEwZmQyNTUwOSIsImF1ZCI6ImRpZDpuaWw6YWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhIiwic3ViIjoiZGlkOm5pbDowMzE0ZGI4ZDRkMzQxMDFiYTgwMTc0YjkzN2ZhMGE5MDAzNDlmNTEzZjZkNjMwOTc4MWUwMTViZDg1YzkzZTAwMDAiLCJjbWQiOiIvbmlsL2Jhci9mb28iLCJhcmdzIjp7ImJhciI6MTMzNywiZm9vIjo0Mn0sIm5vbmNlIjoiZjZjODQ1ZTgyM2NmOWYxZTQwM2M2ZWQzYTRjYWI5MzkiLCJwcmYiOlsiZmQ2ZDQzNzE5ZGFlYjI1NjdkNThkM2JiYWFkMDViMjk3NTkyYzRhZmJmZDA0MjdiNGJkZTU2YjVjZDIyODI4OCJdfQ.HFbkOcpS61YBtLCRJY4dwANC79P0GZzzHPK7z016iz0hwCTyQ56-3esjkFPOtdDkgzhNQB1Rc6-kclaC84FmKA/eyJhbGciOiJFUzI1NksifQ.eyJpc3MiOiJkaWQ6bmlsOjAzMTRkYjhkNGQzNDEwMWJhODAxNzRiOTM3ZmEwYTkwMDM0OWY1MTNmNmQ2MzA5NzgxZTAxNWJkODVjOTNlMDAwMCIsImF1ZCI6ImRpZDpuaWw6MDNlY2M4OWM2NGY4NTY2OGU3ZDdjYTIyOGRmMTAzNDFiNzVmODg3NWNmMGYwMDMyY2I5OWQyMjVkYTBmZDI1NTA5Iiwic3ViIjoiZGlkOm5pbDowMzE0ZGI4ZDRkMzQxMDFiYTgwMTc0YjkzN2ZhMGE5MDAzNDlmNTEzZjZkNjMwOTc4MWUwMTViZDg1YzkzZTAwMDAiLCJjbWQiOiIvbmlsL2JhciIsInBvbCI6W1siPT0iLCIuYXJncy5iYXIiLDEzMzddXSwibm9uY2UiOiJjODk4OTE3NzYzODE5OGQ2MmMxZDE0NGU0OWFhY2IzNyIsInByZiI6WyIzM2Y4OWUyOWUzZjFlZGQ1YzY1ZTNmNjY0NzVhNDg3MjVhOTA5NzcyY2I0ZTQ3ZjRlMjMxYWE4OGE3MTE4Y2ZjIl19.KKDipMYKidTm8GjrYCk2IRbJaVoc-kbJruxI4mPD_N4LqnXJIEv0TbDrl2fMOnxPvxGS9Aep6MEf4Zlauds1OA/eyJhbGciOiJFUzI1NksifQ.eyJpc3MiOiJkaWQ6bmlsOjAyMGJkMzlhZjEwMjNlN2M3ZGQwMGM4N2QwYjg1OTAyMjEyMmU0NzVhMzJhMjI0ZmNjODNmMmRlMThkODcyZWQ1NyIsImF1ZCI6ImRpZDpuaWw6MDMxNGRiOGQ0ZDM0MTAxYmE4MDE3NGI5MzdmYTBhOTAwMzQ5ZjUxM2Y2ZDYzMDk3ODFlMDE1YmQ4NWM5M2UwMDAwIiwic3ViIjoiZGlkOm5pbDowMzE0ZGI4ZDRkMzQxMDFiYTgwMTc0YjkzN2ZhMGE5MDAzNDlmNTEzZjZkNjMwOTc4MWUwMTViZDg1YzkzZTAwMDAiLCJjbWQiOiIvbmlsIiwicG9sIjpbWyI9PSIsIi5hcmdzLmZvbyIsNDJdLFsiPT0iLCIkLnJlcS5iYXIiLDEzMzddXSwibm9uY2UiOiJkMzcwODM3NTZhMzAzZjk0NjZjNWRmZjhmODRhYzM4YSIsInByZiI6W119.VP2yIlY6rad9diKrIX2_Q4K7tUpJAxLA1j-MdTG9jd5tHavOH2Zk31BVEv-3GNHoSulvbVw7ipVXgB70TlXU0A";
 
 type PolicyArray = [string, string, number | string];
 
@@ -78,6 +74,11 @@ const NUCDecoder: React.FC = () => {
   const signatureHex = (signature: Uint8Array) => Array.from(signature)
     .map(b => b.toString(16).padStart(2, '0'))
     .join('');
+
+  const loadTestToken = () => {
+    setNUC(TEST_TOKEN);
+    setError(null);
+  };
 
   const decodeNUC = async () => {
     setError(null);
@@ -263,13 +264,22 @@ const NUCDecoder: React.FC = () => {
               />
             </div>
 
-            <button
-              onClick={decodeNUC}
-              disabled={!nuc.trim()}
-              className="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold text-lg rounded-xl hover:from-blue-700 hover:to-indigo-700 focus:ring-4 focus:ring-blue-500/30 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105 disabled:transform-none"
-            >
-              Decode NUC
-            </button>
+            <div className="flex flex-col sm:flex-row gap-4">
+              <button
+                onClick={decodeNUC}
+                disabled={!nuc.trim()}
+                className="flex-1 sm:flex-none px-8 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold text-lg rounded-xl hover:from-blue-700 hover:to-indigo-700 focus:ring-4 focus:ring-blue-500/30 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105 disabled:transform-none"
+              >
+                Decode NUC
+              </button>
+
+              <button
+                onClick={loadTestToken}
+                className="flex-1 sm:flex-none px-8 py-4 bg-white/90 text-blue-600 font-bold text-lg rounded-xl hover:bg-white focus:ring-4 focus:ring-blue-500/30 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105 border-2 border-blue-600"
+              >
+                Try with Test Token
+              </button>
+            </div>
 
             {error && (
               <div className="mt-6 p-6 bg-red-50/90 backdrop-blur-sm border-2 border-red-200 rounded-xl flex items-start gap-4 shadow-lg">
