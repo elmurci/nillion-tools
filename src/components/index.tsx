@@ -99,7 +99,7 @@ const Index: React.FC = () => {
     {
       title: 'Testnet Faucet',
       description: 'A faucet for obtaining testnet tokens for the Nillion platform.',
-      href: 'https://faucet.testnet.nillion.com/',
+      href: 'https://faucet.testnet.nillion.network/',
       isExternal: true,
       icon: 'coins' as const,
       areas: ['Faucet']
